@@ -1,4 +1,7 @@
-require './colors.rb'
+# frozen_string_literal: true
+
+require './text_styles'
+require './intro.rb'
 
 # TODO- CL game ; 12 turns to guess secret code; starts with guessing computer's random code
 # * Game randomly selects a code (colors) and human must guess
