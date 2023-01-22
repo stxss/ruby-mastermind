@@ -3,140 +3,63 @@
 # Applying color and other modifications (like boldness, italic, etc.) and background color to the terminal text
 module TextStyles
   # Foreground colors
-  def black
-    "\033[30m#{self}\033[0m"
-  end
+  RGB_COLOR_MAP = {
+    black: '0;0;0',
+    white: '211;215;207',
+    cyan: '139;233;253',
+    dark_cyan: '42;147;141',
+    green: '158;206;106',
+    dark_green: '38;156;90',
+    pinkish: '247;118;142',
+    red: '241;73;57',
+    dark_red: '190;28;40',
+    blue: '122;162;247',
+    yellow: '224;175;104',
+    violet: '94;84;142',
+    thistle: '199;182;221',
+    mauve: '231;198;255'
+  }.freeze
 
-  def dark_red
-    "\033[31m#{self}\033[0m"
-  end
+  refine String do
+    # Font/Foreground colors
+    def fg_color(color_name)
+      rgb_val = RGB_COLOR_MAP[color_name]
+      "\e[38;2;#{rgb_val}m#{self}\e[0m"
+    end
 
-  def dark_green
-    "\033[32m#{self}\033[0m"
-  end
+    # Background colors
+    def bg_color(color_name)
+      rgb_val = RGB_COLOR_MAP[color_name]
+      "\e[48;2;#{rgb_val}m#{self}\e[0m"
+    end
 
-  def dark_yellow
-    "\033[33m#{self}\033[0m"
-  end
+    # Other text style modifiers
+    def bold
+      "\033[1m#{self}\033[0m"
+    end
 
-  def dark_blue
-    "\033[34m#{self}\033[0m"
-  end
+    def dim
+      "\033[2m#{self}\033[0m"
+    end
 
-  def dark_magenta
-    "\033[35m#{self}\033[0m"
-  end
+    def italic
+      "\033[3m#{self}\033[0m"
+    end
 
-  def dark_cyan
-    "\033[36m#{self}\033[0m"
-  end
+    def underlined
+      "\033[4m#{self}\033[0m"
+    end
 
-  def red
-    "\033[91m#{self}\033[0m"
-  end
+    def reverse
+      "\033[7m#{self}\033[0m"
+    end
 
-  def green
-    "\033[92m#{self}\033[0m"
-  end
-
-  def orange
-    "\033[93m#{self}\033[0m"
-  end
-
-  def blue
-    "\033[94m#{self}\033[0m"
-  end
-
-  def magenta
-    "\033[95m#{self}\033[0m"
-  end
-
-  def cyan
-    "\033[96m#{self}\033[0m"
-  end
-
-  # Background colors
-  def bg_white
-    "\033[97m#{self}\033[0m"
-  end
-
-  def bg_black
-    "\033[40m#{self}\033[0m"
-  end
-
-  def bg_dark_red
-    "\033[41m#{self}\033[0m"
-  end
-
-  def bg_dark_green
-    "\033[42m#{self}\033[0m"
-  end
-
-  def bg_dark_yellow
-    "\033[43m#{self}\033[0m"
-  end
-
-  def bg_dark_blue
-    "\033[44m#{self}\033[0m"
-  end
-
-  def bg_dark_magenta
-    "\033[45m#{self}\033[0m"
-  end
-
-  def bg_dark_cyan
-    "\033[46m#{self}\033[0m"
-  end
-
-  def bg_red
-    "\033[101m#{self}\033[0m"
-  end
-
-  def bg_green
-    "\033[102m#{self}\033[0m"
-  end
-
-  def bg_orange
-    "\033[103m#{self}\033[0m"
-  end
-
-  def bg_blue
-    "\033[104m#{self}\033[0m"
-  end
-
-  def bg_magenta
-    "\033[105m#{self}\033[0m"
-  end
-
-  def bg_cyan
-    "\033[106m#{self}\033[0m"
-  end
-
-  # Other text style modifiers
-  def bold
-    "\033[1m#{self}\033[0m"
-  end
-
-  def dim
-    "\033[2m#{self}\033[0m"
-  end
-
-  def italic
-    "\033[3m#{self}\033[0m"
-  end
-
-  def underlined
-    "\033[4m#{self}\033[0m"
-  end
-
-  def reverse
-    "\033[7m#{self}\033[0m"
-  end
-
-  def blink
-    "\033[5m#{self}\033[0m"
+    def blink
+      "\033[5m#{self}\033[0m"
+    end
   end
 end
 
 # Codes for the colors provided in https://www.codeproject.com/Articles/5329247/How-to-change-text-color-in-a-Linux-terminal
 # Other codes from https://askubuntu.com/questions/558280/changing-colour-of-text-and-background-of-terminal
+# As well as https://dev.to/joshdevhub/terminal-colors-using-ruby-410p
