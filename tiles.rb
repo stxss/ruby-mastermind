@@ -35,4 +35,16 @@ class Tile
     def self.blank
         "#{' 0 '.bold.bg_color(:gray)}"
     end
+
+    def self.color_only
+        "\u{25cf}".fg_color(:pink)
+    end
+
+    def self.place_color
+        "\u{25cf}".fg_color(:dark_green)
+    end
+
+    def self.empty
+        "\u{25cb}"
+    end
 end
