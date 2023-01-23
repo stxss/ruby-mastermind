@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require './text_styles'
-require './tiles.rb'
+require './tiles'
 
 class Intro
   using TextStyles
@@ -37,16 +37,14 @@ class Intro
 
     puts "\nHere's how the pattern for cracking the code could look like:"
 
-    puts "\n#{Tile.teal} #{Tile.red} #{Tile.blue} #{Tile.green}" + "   ||   " + "Feedback: #{Tile.color_only} #{Tile.place_color} #{Tile.empty} #{Tile.empty}"
-    puts "\n#{Tile.violet} #{Tile.blue} #{Tile.blue} #{Tile.blank}" + "   ||   " + "Feedback: #{Tile.color_only} #{Tile.empty} #{Tile.empty} #{Tile.empty}"
-    puts "\n#{Tile.red} #{Tile.green} #{Tile.violet} #{Tile.blue}" + "   ||   " + "Feedback: #{Tile.place_color} #{Tile.place_color} #{Tile.color_only} #{Tile.empty}"
-    puts "\n#{Tile.red} #{Tile.violet} #{Tile.green} #{Tile.orange}" + "   ||   " + "Feedback: #{Tile.place_color} #{Tile.place_color} #{Tile.color_only} #{Tile.color_only}"
+    puts "\n#{Tile.teal} #{Tile.red} #{Tile.blue} #{Tile.green}   ||   Feedback: #{Tile.color_only} #{Tile.place_color} #{Tile.empty} #{Tile.empty}"
+    puts "\n#{Tile.violet} #{Tile.blue} #{Tile.blue} #{Tile.blank}   ||   Feedback: #{Tile.color_only} #{Tile.empty} #{Tile.empty} #{Tile.empty}"
+    puts "\n#{Tile.red} #{Tile.green} #{Tile.violet} #{Tile.blue}   ||   Feedback: #{Tile.place_color} #{Tile.place_color} #{Tile.color_only} #{Tile.empty}"
+    puts "\n#{Tile.red} #{Tile.violet} #{Tile.green} #{Tile.orange}   ||   Feedback: #{Tile.place_color} #{Tile.place_color} #{Tile.color_only} #{Tile.color_only}"
 
-    puts "\n#{Tile.red} #{Tile.violet} #{Tile.orange} #{Tile.green}"+ "   ||   " + "Feedback: #{Tile.place_color} #{Tile.place_color} #{Tile.place_color} #{Tile.place_color}"
+    puts "\n#{Tile.red} #{Tile.violet} #{Tile.orange} #{Tile.green}   ||   Feedback: #{Tile.place_color} #{Tile.place_color} #{Tile.place_color} #{Tile.place_color}"
     puts "\nCongratulations! You broke the code!!\n\n"
-
   end
 end
 
 intro = Intro.new
-
