@@ -11,7 +11,7 @@ module TextStyles
     green: '47;70;27',
     light_green: '158;206;106',
     dark_green: '38;156;90',
-    pinkish: '247;118;142',
+    pink: '247;118;142',
     red: '129;19;9',
     dark_red: '190;28;40',
     light_blue: '122;162;247',
