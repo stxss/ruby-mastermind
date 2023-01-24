@@ -3,6 +3,7 @@
 require './text_styles'
 require './tiles'
 
+# Class to print the introduction to the game
 class Intro
   using TextStyles
 
@@ -43,8 +44,5 @@ class Intro
     puts "\n#{Tile.red} #{Tile.violet} #{Tile.green} #{Tile.orange}   ||   Feedback: #{Tile.place_color} #{Tile.place_color} #{Tile.color_only} #{Tile.color_only}"
 
     puts "\n#{Tile.red} #{Tile.violet} #{Tile.orange} #{Tile.green}   ||   Feedback: #{Tile.place_color} #{Tile.place_color} #{Tile.place_color} #{Tile.place_color}"
-    puts "\nCongratulations! You broke the code!!\n\n"
   end
 end
-
-intro = Intro.new
