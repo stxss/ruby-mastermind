@@ -36,6 +36,10 @@ class Tile
     ' 0 '.bold.bg_color(:gray).to_s
   end
 
+  def self.empty_tile
+    "\u{25ef}"
+  end
+
   def self.color_only
     "\u{25cf}".fg_color(:pink)
   end
@@ -44,7 +48,7 @@ class Tile
     "\u{25cf}".fg_color(:dark_green)
   end
 
-  def self.empty
+  def self.empty_hint
     "\u{25cb}"
   end
 end
