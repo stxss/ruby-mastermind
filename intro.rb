@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Layout/LineLength
 # rubocop: disable Metrics/AbcSize
 
 require './text_styles'
@@ -44,11 +43,11 @@ class Intro
 
       Here's how the pattern for cracking the code could look like:
 
-      #{Tile.teal} #{Tile.red} #{Tile.blue} #{Tile.green}   ||   Feedback: #{Tile.color_only} #{Tile.place_color} #{Tile.empty} #{Tile.empty}
+      #{Tile.teal} #{Tile.red} #{Tile.blue} #{Tile.green}   ||   Feedback: #{Tile.color_only} #{Tile.place_color} #{Tile.empty_hint} #{Tile.empty_hint}
 
-      #{Tile.violet} #{Tile.blue} #{Tile.blue} #{Tile.blank}   ||   Feedback: #{Tile.color_only} #{Tile.empty} #{Tile.empty} #{Tile.empty}
+      #{Tile.violet} #{Tile.blue} #{Tile.blue} #{Tile.blank}   ||   Feedback: #{Tile.color_only} #{Tile.empty_hint} #{Tile.empty_hint} #{Tile.empty_hint}
 
-      #{Tile.red} #{Tile.green} #{Tile.violet} #{Tile.blue}   ||   Feedback: #{Tile.place_color} #{Tile.place_color} #{Tile.color_only} #{Tile.empty}
+      #{Tile.red} #{Tile.green} #{Tile.violet} #{Tile.blue}   ||   Feedback: #{Tile.place_color} #{Tile.place_color} #{Tile.color_only} #{Tile.empty_hint}
 
       #{Tile.red} #{Tile.violet} #{Tile.green} #{Tile.orange}   ||   Feedback: #{Tile.place_color} #{Tile.place_color} #{Tile.color_only} #{Tile.color_only}
 
@@ -57,5 +56,4 @@ class Intro
   end
 end
 
-# rubocop:enable Layout/LineLength
 # rubocop: enable Metrics/AbcSize

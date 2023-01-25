@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# rubocop: disable Metrics/AbcSize
+# rubocop: disable Metrics/MethodLength
+
 require './text_styles'
 require './intro'
 require './tiles'
@@ -17,10 +20,31 @@ class Board
     @duplicates = duplicates
     @blanks = blanks
     code_map
-    round(@turns)
+
+    @turn = 1
+    @max = turns * 4
+    until @is_winner
+      board
+
+      if @turn > @max && !@is_winner
+        puts 'You lost! Better luck next time!'
+        restart
+      end
+    end
   end
 
   def code_map
+    # The user can enter either a number,a letter representing a color or the color name
+    # Hash for colored tiles for available options of player choice
+    @color_hash = {
+      '1' => Tile.red, r: Tile.red, red: Tile.red,
+      '2' => Tile.green, g: Tile.green, green: Tile.green,
+      '3' => Tile.blue, b: Tile.blue, blue: Tile.blue,
+      '4' => Tile.orange, o: Tile.orange, orange: Tile.orange,
+      '5' => Tile.violet, v: Tile.violet, violet: Tile.violet,
+      '6' => Tile.teal, t: Tile.teal, teal: Tile.teal
+    }
+
     # Available numbers to create codes from
     av = [1, 2, 3, 4, 5, 6]
 
@@ -37,6 +61,7 @@ class Board
     elsif !duplicates && !blanks
       @codes = av.permutation(4).to_a
     end
+    @secret_code = @codes.sample
   end
 
   def board
@@ -49,35 +74,34 @@ class Board
       puts "#{"\n  #{tile_placeholder * 4}"}||  #{feedback_placeholder * 4}\n\n"
     end
 
+    p @secret_code
+
     @turns.times do
       color_check
     end
+
+    @turn += 1
   end
 
   def color_check
-    @turns.times do
-      puts 'Please, enter a color/number of your choice'
+    @responses = ['1', '2', '3', '4', '5', '6', 'r'.downcase, 'g'.downcase, 'b'.downcase, 'o'.downcase, 'v'.downcase, 't'.downcase, 'red'.downcase, 'green'.downcase, 'blue'.downcase, 'orange'.downcase, 'violet'.downcase, 'teal'.downcase]
+    answer = ''
+    puts 'Please, enter a color/number of your choice'
+    loop do
       answer = gets.chomp
+      break if @responses.include?(answer)
     end
+    new_board(answer)
   end
 
-  def round(turns)
-    @turn = 1
-    @max = turns * 4
-    until @is_winner
-      board
-      p @max
-      if @turn == @max && !@is_winner
-        puts 'You lost! Better luck next time!'
-        restart
-      end
+  def new_board(answer)
+    system('clear')
+    @board_tiles = [Tile.empty_tile, Tile.empty_tile, Tile.empty_tile, Tile.empty_tile]
+    @turns.times do
+      tile_color = @color_hash[answer]
+      puts tile_color
     end
-  end
-
-  # Function to use if the player chooses to be the codebreaker (aka computer makes the code)
-  def codebreaker
-    secret_code = @codes.sample
-    p secret_code
+    puts "#{"\n  #{@board_tiles[0]} #{@board_tiles[1]} #{@board_tiles[2]} #{@board_tiles[3]}"}||  #{Tile.empty_hint * 4}\n\n"
   end
 
   # Method for restart
@@ -95,3 +119,6 @@ class Board
     end
   end
 end
+
+# rubocop: enable Metrics/AbcSize
+# rubocop: enable Metrics/MethodLength
