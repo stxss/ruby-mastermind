@@ -22,7 +22,9 @@ class Board
     code_map
 
     @turn = 1
-    @max = turns * 4
+    @max = @turns * 4
+    @board_row = [Tile.empty_tile, Tile.empty_tile, Tile.empty_tile, Tile.empty_tile]
+    @board_tiles = Array.new(@turns, @board_row)
     until @is_winner
       board
 
@@ -65,59 +67,43 @@ class Board
   end
 
   def board
-    tile_placeholder = "#{Tile.empty_tile}   "
-    feedback_placeholder = "#{Tile.empty_hint} "
-
     system('clear')
-
-    @turns.times do
-      puts "#{"\n  #{tile_placeholder * 4}"}||  #{feedback_placeholder * 4}\n\n"
+    flat_board = @board_tiles.flatten
+    @turns.times do |i|
+      puts "#{"\n  #{@board_tiles[i][0]}   #{@board_tiles[i][1]}   #{@board_tiles[i][2]}   #{@board_tiles[i][3]}"}   ||  #{Tile.empty_hint * 4}\n\n"
     end
 
     p @secret_code
 
-    @turns.times do
-      color_check
+    for i in (0..4)
+      color_check(@turn, i)
     end
 
     @turn += 1
   end
 
-  def color_check
+  def color_check(first, second)
     @responses = ['1', '2', '3', '4', '5', '6', 'r'.downcase, 'g'.downcase, 'b'.downcase, 'o'.downcase, 'v'.downcase,
                   't'.downcase, 'red'.downcase, 'green'.downcase, 'blue'.downcase, 'orange'.downcase, 'violet'.downcase, 'teal'.downcase]
-    answer = ''
-    puts 'Please, enter a color/number of your choice'
-    loop do
-      answer = gets.chomp
-      break if @responses.include?(answer)
-    end
-    new_board(answer)
-  end
 
-  def new_board(answer)
-    system('clear')
-    @board_row = [Tile.empty_tile, Tile.empty_tile, Tile.empty_tile, Tile.empty_tile]
-    @board_tiles = Array.new(@turns, @board_row)
-    p @board_tiles
-    p @board_tiles[0]
-    p @board_tiles[0][1]
-    @turns.times do |i|
-      4.times do |j|
-        case (@turn % 4)
-        when 1
-          @board_tiles[i][j] = @color_hash[answer]
-        when 2
-          @board_tiles[i][j] = @color_hash[answer]
-        when 3
-          @board_tiles[i][j] = @color_hash[answer]
-        when 0
-          @board_tiles[i][j] = @color_hash[answer]
-        end
+    answers = []
+    answer = ''
+    for i in (0..3) do
+      puts 'Please, enter a color/number of your choice'
+      loop do
+        answer = gets.chomp
+        break if @responses.include?(answer)
+      end
+      answers.push(answer)
+
+      @board_tiles[@turn][i] = @color_hash[answer]
+
+      @turns.times do
+        system('clear')
+        puts "#{"\n  #{@board_tiles[first][0]}   #{@board_tiles[first][1]}   #{@board_tiles[first][2]}   #{@board_tiles[first][3]}"}   ||  #{Tile.empty_hint * 4}\n\n"
+        p answers
       end
     end
-
-    puts "#{"\n  #{@board_tiles[][0]}   #{@board_tiles[][1]}   #{@board_tiles[][2]}   #{@board_tiles[][3]}"}   ||  #{Tile.empty_hint * 4}\n\n"
   end
 
   # Method for restart
