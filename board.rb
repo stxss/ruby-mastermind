@@ -84,7 +84,8 @@ class Board
   end
 
   def color_check
-    @responses = ['1', '2', '3', '4', '5', '6', 'r'.downcase, 'g'.downcase, 'b'.downcase, 'o'.downcase, 'v'.downcase, 't'.downcase, 'red'.downcase, 'green'.downcase, 'blue'.downcase, 'orange'.downcase, 'violet'.downcase, 'teal'.downcase]
+    @responses = ['1', '2', '3', '4', '5', '6', 'r'.downcase, 'g'.downcase, 'b'.downcase, 'o'.downcase, 'v'.downcase,
+                  't'.downcase, 'red'.downcase, 'green'.downcase, 'blue'.downcase, 'orange'.downcase, 'violet'.downcase, 'teal'.downcase]
     answer = ''
     puts 'Please, enter a color/number of your choice'
     loop do
@@ -97,11 +98,23 @@ class Board
   def new_board(answer)
     system('clear')
     @board_tiles = [Tile.empty_tile, Tile.empty_tile, Tile.empty_tile, Tile.empty_tile]
-    @turns.times do
-      tile_color = @color_hash[answer]
-      puts tile_color
+    guess1 = @board_tiles[0]
+    guess2 = @board_tiles[1]
+    guess3 = @board_tiles[2]
+    guess4 = @board_tiles[3]
+    case (@turn % 4)
+    when 1
+      guess1 = @color_hash[answer]
+    when 2
+      guess2 = @color_hash[answer]
+    when 3
+      guess3 = @color_hash[answer]
+    when 0
+      guess4 = @color_hash[answer]
     end
-    puts "#{"\n  #{@board_tiles[0]} #{@board_tiles[1]} #{@board_tiles[2]} #{@board_tiles[3]}"}||  #{Tile.empty_hint * 4}\n\n"
+    # tile_color = @color_hash[answer]
+    # puts tile_color
+    puts "#{"\n  #{guess1} #{guess2} #{guess3} #{guess4}"}||  #{Tile.empty_hint * 4}\n\n"
   end
 
   # Method for restart
