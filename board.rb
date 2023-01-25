@@ -97,24 +97,27 @@ class Board
 
   def new_board(answer)
     system('clear')
-    @board_tiles = [Tile.empty_tile, Tile.empty_tile, Tile.empty_tile, Tile.empty_tile]
-    guess1 = @board_tiles[0]
-    guess2 = @board_tiles[1]
-    guess3 = @board_tiles[2]
-    guess4 = @board_tiles[3]
-    case (@turn % 4)
-    when 1
-      guess1 = @color_hash[answer]
-    when 2
-      guess2 = @color_hash[answer]
-    when 3
-      guess3 = @color_hash[answer]
-    when 0
-      guess4 = @color_hash[answer]
+    @board_row = [Tile.empty_tile, Tile.empty_tile, Tile.empty_tile, Tile.empty_tile]
+    @board_tiles = Array.new(@turns, @board_row)
+    p @board_tiles
+    p @board_tiles[0]
+    p @board_tiles[0][1]
+    @turns.times do |i|
+      4.times do |j|
+        case (@turn % 4)
+        when 1
+          @board_tiles[i][j] = @color_hash[answer]
+        when 2
+          @board_tiles[i][j] = @color_hash[answer]
+        when 3
+          @board_tiles[i][j] = @color_hash[answer]
+        when 0
+          @board_tiles[i][j] = @color_hash[answer]
+        end
+      end
     end
-    # tile_color = @color_hash[answer]
-    # puts tile_color
-    puts "#{"\n  #{guess1} #{guess2} #{guess3} #{guess4}"}||  #{Tile.empty_hint * 4}\n\n"
+
+    puts "#{"\n  #{@board_tiles[][0]}   #{@board_tiles[][1]}   #{@board_tiles[][2]}   #{@board_tiles[][3]}"}   ||  #{Tile.empty_hint * 4}\n\n"
   end
 
   # Method for restart
