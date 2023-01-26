@@ -2,8 +2,8 @@
 
 # rubocop: disable Metrics/AbcSize
 
-require './text_styles'
-require './tiles'
+require_relative './text_styles'
+require_relative './tiles'
 
 # Class to print the introduction to the game
 class Intro

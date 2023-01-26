@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require './text_styles'
+require_relative './text_styles'
 
 # Class for the colored tiles
 class Tile

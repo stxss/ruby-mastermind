@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require './text_styles'
-require './intro'
-require './tiles'
+require_relative './text_styles'
+require_relative './intro'
+require_relative './tiles'
 
 # Game class
 class Game

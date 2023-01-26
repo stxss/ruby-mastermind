@@ -3,10 +3,11 @@
 # rubocop: disable Metrics/AbcSize
 # rubocop: disable Metrics/MethodLength
 
-require './text_styles'
-require './intro'
-require './tiles'
-require './game'
+require_relative './text_styles'
+require_relative './intro'
+require_relative './tiles'
+require_relative './game'
+
 
 # Board class
 class Board
@@ -24,14 +25,13 @@ class Board
     @turn = 1
     @max = @turns * 4
     @board_row = [Tile.empty_tile, Tile.empty_tile, Tile.empty_tile, Tile.empty_tile]
-    @board_tiles = Array.new(@turns, @board_row)
-    until @is_winner
-      board
-
-      if @turn > @max && !@is_winner
+    @board_tiles = Array.new(@turns + 1, @board_row)
+    until @is_winner || (@turn > @max)
+      if (@turn > @turns) && !@is_winner
         puts 'You lost! Better luck next time!'
         restart
       end
+      board
     end
   end
 
@@ -68,35 +68,32 @@ class Board
 
   def board
     system('clear')
-    flat_board = @board_tiles.flatten
+    p @turn
     @turns.times do |i|
       puts "#{"\n  #{@board_tiles[i][0]}   #{@board_tiles[i][1]}   #{@board_tiles[i][2]}   #{@board_tiles[i][3]}"}   ||  #{Tile.empty_hint * 4}\n\n"
     end
 
     p @secret_code
 
-    for i in (0..4)
-      color_check(@turn, i)
-    end
-
+    color_check(@turn)
     @turn += 1
   end
 
-  def color_check(first, second)
+  def color_check(first)
     @responses = ['1', '2', '3', '4', '5', '6', 'r'.downcase, 'g'.downcase, 'b'.downcase, 'o'.downcase, 'v'.downcase,
                   't'.downcase, 'red'.downcase, 'green'.downcase, 'blue'.downcase, 'orange'.downcase, 'violet'.downcase, 'teal'.downcase]
 
     answers = []
     answer = ''
-    for i in (0..3) do
+    4.times do |i|
       puts 'Please, enter a color/number of your choice'
       loop do
         answer = gets.chomp
         break if @responses.include?(answer)
       end
-      answers.push(answer)
+      answers.push(answer.to_i)
 
-      @board_tiles[@turn][i] = @color_hash[answer]
+      @board_tiles[first][i] = @color_hash[answer]
 
       @turns.times do
         system('clear')
@@ -104,6 +101,11 @@ class Board
         p answers
       end
     end
+
+    return unless @turn > @max && !@is_winner
+
+    puts 'You lost! Better luck next time!'
+    restart
   end
 
   # Method for restart
