@@ -26,6 +26,8 @@ class Board
     @max = @turns * 4
     @board_row = [Tile.empty_tile, Tile.empty_tile, Tile.empty_tile, Tile.empty_tile]
     @board_tiles = Array.new(@turns + 1, @board_row)
+    @arr_answers = Array.new
+
     until @is_winner || (@turn > @max)
       if (@turn > @turns) && !@is_winner
         puts 'You lost! Better luck next time!'
@@ -68,41 +70,60 @@ class Board
 
   def board
     system('clear')
-    p @turn
-    @turns.times do |i|
-      puts "#{"\n  #{@board_tiles[i][0]}   #{@board_tiles[i][1]}   #{@board_tiles[i][2]}   #{@board_tiles[i][3]}"}   ||  #{Tile.empty_hint * 4}\n\n"
+    # @turns.times do |i|
+    #   puts "#{"\n  #{@board_tiles[i][0]}   #{@board_tiles[i][1]}   #{@board_tiles[i][2]}   #{@board_tiles[i][3]}"}   ||  #{Tile.empty_hint * 4}\n\n"
+    # end
+
+    for i in (0..@turns - 1)
+      # puts "#{"\n  #{@board_tiles[i][0]}   #{@board_tiles[i][1]}   #{@board_tiles[i][2]}   #{@board_tiles[i][3]}"}   ||  #{Tile.empty_hint * 4}\n\n"
+      puts "#{"\n  #{@arr_answers[i]}"}   ||  #{Tile.empty_hint * 4}\n\n"
     end
 
     p @secret_code
 
     color_check(@turn)
+
     @turn += 1
   end
 
   def color_check(first)
-    @responses = ['1', '2', '3', '4', '5', '6', 'r'.downcase, 'g'.downcase, 'b'.downcase, 'o'.downcase, 'v'.downcase,
+    @responses = ['0', '1', '2', '3', '4', '5', '6','blank'.downcase, 'r'.downcase, 'g'.downcase, 'b'.downcase, 'o'.downcase, 'v'.downcase,
                   't'.downcase, 'red'.downcase, 'green'.downcase, 'blue'.downcase, 'orange'.downcase, 'violet'.downcase, 'teal'.downcase]
 
-    answers = []
-    answer = ''
+    p @arr_answers
+    user_response = ''
+    @answers = []
+
     4.times do |i|
       puts 'Please, enter a color/number of your choice'
       loop do
-        answer = gets.chomp
-        break if @responses.include?(answer)
+        user_response = gets.chomp
+        break if @responses.include?(user_response)
       end
-      answers.push(answer.to_i)
+      @answers.push(user_response)
 
-      @board_tiles[first][i] = @color_hash[answer]
+      @board_tiles[first][i] = @color_hash[user_response]
 
       @turns.times do
         system('clear')
-        puts "#{"\n  #{@board_tiles[first][0]}   #{@board_tiles[first][1]}   #{@board_tiles[first][2]}   #{@board_tiles[first][3]}"}   ||  #{Tile.empty_hint * 4}\n\n"
-        p answers
+        p @turn
+        # puts "#{"\n  #{@board_tiles[first][0]}   #{@board_tiles[first][1]}   #{@board_tiles[first][2]}   #{@board_tiles[first][3]}"}   ||  #{Tile.empty_hint * 4}\n\n"
+        # puts "#{"\n  #{@arr_answers[0]}   #{@arr_answers[1]}   #{@arr_answers[2]}   #{@arr_answers[3]}"}   ||  #{Tile.empty_hint * 4}\n\n"
+        p @answers
       end
     end
+    @arr_answers.insert(first - 1, @answers)
 
-    return unless @turn > @max && !@is_winner
+    p @arr_answers
+    @arr_answers.each
+    @val = @arr_answers
+    p @val
+    @turns.times do |i|
+        # puts "#{"\n  #{@arr_answers[i]} #{@board_tiles[i][0]} #{@color_hash[@arr_answers[i][j]]}"}   ||  #{Tile.empty_hint * 4}\n\n"
+        puts "#{"\n #{@color_hash[@val]}"}   ||  #{Tile.empty_hint * 4}\n\n"
+    end
+
+    return unless (@turn > @turns) && !@is_winner
 
     puts 'You lost! Better luck next time!'
     restart
