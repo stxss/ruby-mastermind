@@ -114,17 +114,24 @@ class Board
     end
     @arr_answers.insert(first - 1, @answers)
 
-    p @arr_answers
-    @arr_answers.each
-    @val = @arr_answers
-    p @val
-    @turns.times do |i|
-        # puts "#{"\n  #{@arr_answers[i]} #{@board_tiles[i][0]} #{@color_hash[@arr_answers[i][j]]}"}   ||  #{Tile.empty_hint * 4}\n\n"
-        puts "#{"\n #{@color_hash[@val]}"}   ||  #{Tile.empty_hint * 4}\n\n"
+    # p @arr_answers
+    # puts @color_hash[@arr_answers[0][0].to_s]
+
+    # @arr_answers.each_with_index do |inner, index_inner|
+    #   inner.each_with_index do |tile, index_element|
+    #     # puts @color_hash[@arr_answers[index_inner][index_element].to_s]
+    #     puts "#{"\n #{@color_hash[@arr_answers[index_inner][index_element].to_s]}"}   ||  #{Tile.empty_hint * 4}\n\n"
+    #   end
+    # end
+
+    @arr_answers.each_with_index do |inner, index_inner|
+        # puts @color_hash[@arr_answers[index_inner][index_element].to_s]
+        puts "#{"\n #{@color_hash[@arr_answers[index_inner][0].to_s]} #{@color_hash[@arr_answers[index_inner][1].to_s]} #{@color_hash[@arr_answers[index_inner][2].to_s]} #{@color_hash[@arr_answers[index_inner][3].to_s]}"}   ||  #{Tile.empty_hint * 4}\n\n"
     end
 
     return unless (@turn > @turns) && !@is_winner
 
+    puts "#{"\n #{@arr_answers[i]}"}   ||  #{Tile.empty_hint * 4}\n\n"
     puts 'You lost! Better luck next time!'
     restart
   end
