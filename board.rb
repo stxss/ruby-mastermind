@@ -28,6 +28,7 @@ class Board
     @board_tiles = Array.new(@turns + 1, @board_row)
     @arr_answers = Array.new(@turn - 1, [Tile.empty_tile, Tile.empty_tile, Tile.empty_tile, Tile.empty_tile])
 
+    # @arr_answers = Array.new(@turns - 1) { Array.new(4, Tile.empty_tile) }
     until @is_winner || (@turn > @max)
       if (@turn > @turns) && !@is_winner
         puts 'You lost! Better luck next time!'
@@ -35,7 +36,11 @@ class Board
       end
       system('clear')
       @arr_answers.each_with_index do |_inner, index_inner|
-        puts "#{"\n #{@color_hash[@arr_answers[index_inner][0].to_s]} #{@color_hash[@arr_answers[index_inner][1].to_s]} #{@color_hash[@arr_answers[index_inner][2].to_s]} #{@color_hash[@arr_answers[index_inner][3].to_s]}"}   ||  #{Tile.empty_hint * 4}\n\n"
+        @tile1 = @color_hash[@arr_answers[index_inner][0].to_s]
+        @tile2 = @color_hash[@arr_answers[index_inner][1].to_s]
+        @tile3 = @color_hash[@arr_answers[index_inner][2].to_s]
+        @tile4 = @color_hash[@arr_answers[index_inner][3].to_s]
+        puts "#{"\n #{@tile1} #{@tile2} #{@tile3} #{@tile4}"}   ||  #{Tile.empty_hint * 4}\n\n"
       end
       board
     end
@@ -74,7 +79,7 @@ class Board
   end
 
   def board
-    @answers = []
+    @answers = [Tile.empty_tile, Tile.empty_tile, Tile.empty_tile, Tile.empty_tile]
     @arr_answers.insert(@turn - 1, @answers)
 
     4.times do |i|
@@ -100,10 +105,11 @@ class Board
     end
     @answers.insert(idx, user_response)
 
-    @board_tiles[first][idx] = @color_hash[user_response]
-
     system('clear')
 
+    p @arr_answers
+    @answers.delete_at(-1)
+    p @arr_answers
     @arr_answers.each_with_index do |_inner, index_inner|
       puts "#{"\n #{@color_hash[@arr_answers[index_inner][0].to_s]} #{@color_hash[@arr_answers[index_inner][1].to_s]} #{@color_hash[@arr_answers[index_inner][2].to_s]} #{@color_hash[@arr_answers[index_inner][3].to_s]}"}   ||  #{Tile.empty_hint * 4}\n\n"
     end
@@ -115,14 +121,6 @@ class Board
   end
 
   def print_board
-    # @turns.times do
-    #   @tile1 = Tile.empty_tile
-    #   @tile2 = Tile.empty_tile
-    #   @tile3 = Tile.empty_tile
-    #   @tile4 = Tile.empty_tile
-    #   puts "#{"\n #{@tile1} #{@tile2} #{@tile3} #{@tile4}"}   ||  #{Tile.empty_hint * 4}\n\n"
-    # end
-
     @arr_answers.each_with_index do |_inner, index_inner|
       @tile1 = @color_hash[@arr_answers[index_inner][0].to_s]
       @tile2 = @color_hash[@arr_answers[index_inner][1].to_s]
