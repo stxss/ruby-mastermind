@@ -33,6 +33,10 @@ class Board
         puts 'You lost! Better luck next time!'
         restart
       end
+      system('clear')
+      @arr_answers.each_with_index do |_inner, index_inner|
+        puts "#{"\n #{@color_hash[@arr_answers[index_inner][0].to_s]} #{@color_hash[@arr_answers[index_inner][1].to_s]} #{@color_hash[@arr_answers[index_inner][2].to_s]} #{@color_hash[@arr_answers[index_inner][3].to_s]}"}   ||  #{Tile.empty_hint * 4}\n\n"
+      end
       board
     end
   end
@@ -41,6 +45,7 @@ class Board
     # The user can enter either a number,a letter representing a color or the color name
     # Hash for colored tiles for available options of player choice
     @color_hash = {
+      '0' => Tile.blank,
       '1' => Tile.red, r: Tile.red, red: Tile.red,
       '2' => Tile.green, g: Tile.green, green: Tile.green,
       '3' => Tile.blue, b: Tile.blue, blue: Tile.blue,
@@ -69,20 +74,13 @@ class Board
   end
 
   def board
-    system('clear')
-
-    @arr_answers.each_with_index do |_inner, index_inner|
-      puts "#{"\n #{@color_hash[@arr_answers[index_inner][0].to_s]} #{@color_hash[@arr_answers[index_inner][1].to_s]} #{@color_hash[@arr_answers[index_inner][2].to_s]} #{@color_hash[@arr_answers[index_inner][3].to_s]}"}   ||  #{Tile.empty_hint * 4}\n\n"
-    end
-
-    p @secret_code
     @answers = []
     @arr_answers.insert(@turn - 1, @answers)
 
     4.times do |i|
+      print_board
       color_check(@turn, i)
     end
-
     @turn += 1
   end
 
@@ -91,13 +89,15 @@ class Board
                   't'.downcase, 'red'.downcase, 'green'.downcase, 'blue'.downcase, 'orange'.downcase, 'violet'.downcase, 'teal'.downcase]
 
     user_response = ''
+    p @secret_code
+
+    print_board
 
     puts 'Please, enter a color/number of your choice'
     loop do
       user_response = gets.chomp
       break if @responses.include?(user_response)
     end
-
     @answers.insert(idx, user_response)
 
     @board_tiles[first][idx] = @color_hash[user_response]
@@ -112,6 +112,23 @@ class Board
 
     puts 'You lost! Better luck next time!'
     restart
+  end
+
+  def print_board
+    # @turns.times do
+    #   @tile1 = Tile.empty_tile
+    #   @tile2 = Tile.empty_tile
+    #   @tile3 = Tile.empty_tile
+    #   @tile4 = Tile.empty_tile
+    #   puts "#{"\n #{@tile1} #{@tile2} #{@tile3} #{@tile4}"}   ||  #{Tile.empty_hint * 4}\n\n"
+    # end
+
+    @arr_answers.each_with_index do |_inner, index_inner|
+      @tile1 = @color_hash[@arr_answers[index_inner][0].to_s]
+      @tile2 = @color_hash[@arr_answers[index_inner][1].to_s]
+      @tile3 = @color_hash[@arr_answers[index_inner][2].to_s]
+      @tile4 = @color_hash[@arr_answers[index_inner][3].to_s]
+    end
   end
 
   # Method for restart
