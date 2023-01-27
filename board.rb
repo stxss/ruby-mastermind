@@ -2,12 +2,12 @@
 
 # rubocop: disable Metrics/AbcSize
 # rubocop: disable Metrics/MethodLength
+# rubocop: disable Layout/LineLength
 
 require_relative './text_styles'
 require_relative './intro'
 require_relative './tiles'
 require_relative './game'
-
 
 # Board class
 class Board
@@ -26,7 +26,7 @@ class Board
     @max = @turns * 4
     @board_row = [Tile.empty_tile, Tile.empty_tile, Tile.empty_tile, Tile.empty_tile]
     @board_tiles = Array.new(@turns + 1, @board_row)
-    @arr_answers = Array.new
+    @arr_answers = Array.new(@turn - 1, [Tile.empty_tile, Tile.empty_tile, Tile.empty_tile, Tile.empty_tile])
 
     until @is_winner || (@turn > @max)
       if (@turn > @turns) && !@is_winner
@@ -70,50 +70,42 @@ class Board
 
   def board
     system('clear')
-    # @turns.times do |i|
-    #   puts "#{"\n  #{@board_tiles[i][0]}   #{@board_tiles[i][1]}   #{@board_tiles[i][2]}   #{@board_tiles[i][3]}"}   ||  #{Tile.empty_hint * 4}\n\n"
-    # end
 
-    for i in (0..@turns - 1)
-      # puts "#{"\n  #{@board_tiles[i][0]}   #{@board_tiles[i][1]}   #{@board_tiles[i][2]}   #{@board_tiles[i][3]}"}   ||  #{Tile.empty_hint * 4}\n\n"
-      puts "#{"\n  #{@arr_answers[i]}"}   ||  #{Tile.empty_hint * 4}\n\n"
+    @arr_answers.each_with_index do |_inner, index_inner|
+      puts "#{"\n #{@color_hash[@arr_answers[index_inner][0].to_s]} #{@color_hash[@arr_answers[index_inner][1].to_s]} #{@color_hash[@arr_answers[index_inner][2].to_s]} #{@color_hash[@arr_answers[index_inner][3].to_s]}"}   ||  #{Tile.empty_hint * 4}\n\n"
     end
 
     p @secret_code
+    @answers = []
+    @arr_answers.insert(@turn - 1, @answers)
 
-    color_check(@turn)
+    4.times do |i|
+      color_check(@turn, i)
+    end
 
     @turn += 1
   end
 
-  def color_check(first)
+  def color_check(first, idx)
     @responses = ['0', '1', '2', '3', '4', '5', '6','blank'.downcase, 'r'.downcase, 'g'.downcase, 'b'.downcase, 'o'.downcase, 'v'.downcase,
                   't'.downcase, 'red'.downcase, 'green'.downcase, 'blue'.downcase, 'orange'.downcase, 'violet'.downcase, 'teal'.downcase]
 
-    p @arr_answers
     user_response = ''
-    @answers = []
 
-    4.times do |i|
-      puts 'Please, enter a color/number of your choice'
-      loop do
-        user_response = gets.chomp
-        break if @responses.include?(user_response)
-      end
-      @answers.push(user_response)
-
-      @board_tiles[first][i] = @color_hash[user_response]
-
-      @turns.times do |j|
-        system('clear')
-        p @turn
-        p @answers
-      end
+    puts 'Please, enter a color/number of your choice'
+    loop do
+      user_response = gets.chomp
+      break if @responses.include?(user_response)
     end
-    @arr_answers.insert(first - 1, @answers)
+
+    @answers.insert(idx, user_response)
+
+    @board_tiles[first][idx] = @color_hash[user_response]
+
+    system('clear')
 
     @arr_answers.each_with_index do |_inner, index_inner|
-        puts "#{"\n #{@color_hash[@arr_answers[index_inner][0].to_s]} #{@color_hash[@arr_answers[index_inner][1].to_s]} #{@color_hash[@arr_answers[index_inner][2].to_s]} #{@color_hash[@arr_answers[index_inner][3].to_s]}"}   ||  #{Tile.empty_hint * 4}\n\n"
+      puts "#{"\n #{@color_hash[@arr_answers[index_inner][0].to_s]} #{@color_hash[@arr_answers[index_inner][1].to_s]} #{@color_hash[@arr_answers[index_inner][2].to_s]} #{@color_hash[@arr_answers[index_inner][3].to_s]}"}   ||  #{Tile.empty_hint * 4}\n\n"
     end
 
     return unless (@turn > @turns) && !@is_winner
@@ -140,3 +132,4 @@ end
 
 # rubocop: enable Metrics/AbcSize
 # rubocop: enable Metrics/MethodLength
+# rubocop: enable Layout/LineLength
