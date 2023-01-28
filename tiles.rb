@@ -37,7 +37,7 @@ class Tile
   end
 
   def self.empty_tile
-    "\u{25ef}"
+    "\u{25ef} "
   end
 
   def self.color_only

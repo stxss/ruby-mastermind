@@ -36,11 +36,17 @@ class Board
       end
       system('clear')
       @arr_answers.each_with_index do |_inner, index_inner|
-        @tile1 = @color_hash[@arr_answers[index_inner][0].to_s]
-        @tile2 = @color_hash[@arr_answers[index_inner][1].to_s]
-        @tile3 = @color_hash[@arr_answers[index_inner][2].to_s]
-        @tile4 = @color_hash[@arr_answers[index_inner][3].to_s]
-        puts "#{"\n #{@tile1} #{@tile2} #{@tile3} #{@tile4}"}   ||  #{Tile.empty_hint * 4}\n\n"
+        @tile1 = "#{@arr_answers[index_inner][0]}  #{@color_hash[@arr_answers[index_inner][0]]}"
+        @tile2 = "#{@arr_answers[index_inner][1]}  #{@color_hash[@arr_answers[index_inner][1]]}"
+        @tile3 = "#{@arr_answers[index_inner][2]}  #{@color_hash[@arr_answers[index_inner][2]]}"
+        @tile4 = "#{@arr_answers[index_inner][3]}  #{@color_hash[@arr_answers[index_inner][3]]}"
+
+        @check_tile1 = Tile.empty_hint
+        @check_tile2 = Tile.empty_hint
+        @check_tile3 = Tile.empty_hint
+        @check_tile4 = Tile.empty_hint
+
+        puts "#{"\n #{@tile1}  #{@tile2}  #{@tile3}  #{@tile4}"}  ||  #{@check_tile1}  #{@check_tile2}  #{@check_tile3}  #{@check_tile4}\n\n"
       end
       board
     end
@@ -51,12 +57,13 @@ class Board
     # Hash for colored tiles for available options of player choice
     @color_hash = {
       '0' => Tile.blank,
-      '1' => Tile.red, r: Tile.red, red: Tile.red,
-      '2' => Tile.green, g: Tile.green, green: Tile.green,
-      '3' => Tile.blue, b: Tile.blue, blue: Tile.blue,
-      '4' => Tile.orange, o: Tile.orange, orange: Tile.orange,
-      '5' => Tile.violet, v: Tile.violet, violet: Tile.violet,
-      '6' => Tile.teal, t: Tile.teal, teal: Tile.teal
+      '1' => Tile.red, 'r': Tile.red, 'red': Tile.red,
+      '2' => Tile.green, 'g': Tile.green, 'green': Tile.green,
+      '3' => Tile.blue, 'b': Tile.blue, 'blue': Tile.blue,
+      '4' => Tile.orange, 'o': Tile.orange, 'orange': Tile.orange,
+      '5' => Tile.violet, 'v': Tile.violet, 'violet': Tile.violet,
+      '6' => Tile.teal, 't': Tile.teal, 'teal': Tile.teal,
+      "◯": "\u{25ef}"
     }
 
     # Available numbers to create codes from
@@ -79,54 +86,52 @@ class Board
   end
 
   def board
-    @answers = [Tile.empty_tile, Tile.empty_tile, Tile.empty_tile, Tile.empty_tile]
+    # @answers = [Tile.empty_tile, Tile.empty_tile, Tile.empty_tile, Tile.empty_tile]
+    @answers = ["\u{25ef} ", "\u{25ef} ", "\u{25ef} ", "\u{25ef} "]
     @arr_answers.insert(@turn - 1, @answers)
 
     4.times do |i|
-      print_board
-      color_check(@turn, i)
+      color_check(i)
     end
+
     @turn += 1
   end
 
-  def color_check(first, idx)
+  def color_check(idx)
     @responses = ['0', '1', '2', '3', '4', '5', '6','blank'.downcase, 'r'.downcase, 'g'.downcase, 'b'.downcase, 'o'.downcase, 'v'.downcase,
                   't'.downcase, 'red'.downcase, 'green'.downcase, 'blue'.downcase, 'orange'.downcase, 'violet'.downcase, 'teal'.downcase]
 
     user_response = ''
     p @secret_code
 
-    print_board
-
     puts 'Please, enter a color/number of your choice'
     loop do
       user_response = gets.chomp
       break if @responses.include?(user_response)
     end
-    @answers.insert(idx, user_response)
+    @answers.insert(idx, @color_hash[user_response])
 
     system('clear')
 
-    p @arr_answers
     @answers.delete_at(-1)
-    p @arr_answers
     @arr_answers.each_with_index do |_inner, index_inner|
-      puts "#{"\n #{@color_hash[@arr_answers[index_inner][0].to_s]} #{@color_hash[@arr_answers[index_inner][1].to_s]} #{@color_hash[@arr_answers[index_inner][2].to_s]} #{@color_hash[@arr_answers[index_inner][3].to_s]}"}   ||  #{Tile.empty_hint * 4}\n\n"
+      @tile1 = "#{@arr_answers[index_inner][0]}  #{@color_hash[@arr_answers[index_inner][0]]}"
+      @tile2 = "#{@arr_answers[index_inner][1]}  #{@color_hash[@arr_answers[index_inner][1]]}"
+      @tile3 = "#{@arr_answers[index_inner][2]}  #{@color_hash[@arr_answers[index_inner][2]]}"
+      @tile4 = "#{@arr_answers[index_inner][3]}  #{@color_hash[@arr_answers[index_inner][3]]}"
+
+      @check_tile1 = Tile.empty_hint
+      @check_tile2 = Tile.empty_hint
+      @check_tile3 = Tile.empty_hint
+      @check_tile4 = Tile.empty_hint
+
+      puts "#{"\n #{@tile1}  #{@tile2}  #{@tile3}  #{@tile4}"}  ||  #{@check_tile1}  #{@check_tile2}  #{@check_tile3}  #{@check_tile4}\n\n"
     end
 
     return unless (@turn > @turns) && !@is_winner
 
     puts 'You lost! Better luck next time!'
     restart
-  end
-
-  def print_board
-    @arr_answers.each_with_index do |_inner, index_inner|
-      @tile1 = @color_hash[@arr_answers[index_inner][0].to_s]
-      @tile2 = @color_hash[@arr_answers[index_inner][1].to_s]
-      @tile3 = @color_hash[@arr_answers[index_inner][2].to_s]
-      @tile4 = @color_hash[@arr_answers[index_inner][3].to_s]
-    end
   end
 
   # Method for restart
