@@ -28,26 +28,18 @@ class Board
     @board_tiles = Array.new(@turns + 1, @board_row)
     @arr_answers = Array.new(@turn - 1, [Tile.empty_tile, Tile.empty_tile, Tile.empty_tile, Tile.empty_tile])
 
-    # @arr_answers = Array.new(@turns - 1) { Array.new(4, Tile.empty_tile) }
+    @arr_ans_to_check = Array.new(@turn - 1, [Tile.empty_tile, Tile.empty_tile, Tile.empty_tile, Tile.empty_tile])
+
     until @is_winner || (@turn > @max)
       if (@turn > @turns) && !@is_winner
         puts 'You lost! Better luck next time!'
         restart
       end
       system('clear')
-      @arr_answers.each_with_index do |_inner, index_inner|
-        @tile1 = "#{@arr_answers[index_inner][0]}  #{@color_hash[@arr_answers[index_inner][0]]}"
-        @tile2 = "#{@arr_answers[index_inner][1]}  #{@color_hash[@arr_answers[index_inner][1]]}"
-        @tile3 = "#{@arr_answers[index_inner][2]}  #{@color_hash[@arr_answers[index_inner][2]]}"
-        @tile4 = "#{@arr_answers[index_inner][3]}  #{@color_hash[@arr_answers[index_inner][3]]}"
-
-        @check_tile1 = Tile.empty_hint
-        @check_tile2 = Tile.empty_hint
-        @check_tile3 = Tile.empty_hint
-        @check_tile4 = Tile.empty_hint
-
-        puts "#{"\n #{@tile1}  #{@tile2}  #{@tile3}  #{@tile4}"}  ||  #{@check_tile1}  #{@check_tile2}  #{@check_tile3}  #{@check_tile4}\n\n"
-      end
+      print_tiles
+      color_check
+      puts @secret_tally
+      puts @user_tally
       board
     end
   end
@@ -86,18 +78,20 @@ class Board
   end
 
   def board
-    # @answers = [Tile.empty_tile, Tile.empty_tile, Tile.empty_tile, Tile.empty_tile]
-    @answers = ["\u{25ef} ", "\u{25ef} ", "\u{25ef} ", "\u{25ef} "]
+    @answers = [Tile.empty_tile, Tile.empty_tile, Tile.empty_tile, Tile.empty_tile]
     @arr_answers.insert(@turn - 1, @answers)
 
+    @ans_to_check = [77, 77, 77, 77]
+    @arr_ans_to_check.insert(@turn - 1, @ans_to_check)
+
     4.times do |i|
-      color_check(i)
+      color_set(i)
     end
 
     @turn += 1
   end
 
-  def color_check(idx)
+  def color_set(idx)
     @responses = ['0', '1', '2', '3', '4', '5', '6','blank'.downcase, 'r'.downcase, 'g'.downcase, 'b'.downcase, 'o'.downcase, 'v'.downcase,
                   't'.downcase, 'red'.downcase, 'green'.downcase, 'blue'.downcase, 'orange'.downcase, 'violet'.downcase, 'teal'.downcase]
 
@@ -109,29 +103,50 @@ class Board
       user_response = gets.chomp
       break if @responses.include?(user_response)
     end
+
+    @ans_to_check.insert(idx, user_response.to_i)
     @answers.insert(idx, @color_hash[user_response])
 
     system('clear')
 
     @answers.delete_at(-1)
-    @arr_answers.each_with_index do |_inner, index_inner|
-      @tile1 = "#{@arr_answers[index_inner][0]}  #{@color_hash[@arr_answers[index_inner][0]]}"
-      @tile2 = "#{@arr_answers[index_inner][1]}  #{@color_hash[@arr_answers[index_inner][1]]}"
-      @tile3 = "#{@arr_answers[index_inner][2]}  #{@color_hash[@arr_answers[index_inner][2]]}"
-      @tile4 = "#{@arr_answers[index_inner][3]}  #{@color_hash[@arr_answers[index_inner][3]]}"
+    @ans_to_check.delete_at(-1)
 
-      @check_tile1 = Tile.empty_hint
-      @check_tile2 = Tile.empty_hint
-      @check_tile3 = Tile.empty_hint
-      @check_tile4 = Tile.empty_hint
-
-      puts "#{"\n #{@tile1}  #{@tile2}  #{@tile3}  #{@tile4}"}  ||  #{@check_tile1}  #{@check_tile2}  #{@check_tile3}  #{@check_tile4}\n\n"
-    end
-
+    print_tiles
     return unless (@turn > @turns) && !@is_winner
 
     puts 'You lost! Better luck next time!'
     restart
+  end
+
+  def print_tiles
+    @arr_answers.each_with_index do |_inner, index_inner|
+      @tile0 = "#{@arr_answers[index_inner][0]}  #{@color_hash[@arr_answers[index_inner][0]]}"
+      @tile1 = "#{@arr_answers[index_inner][1]}  #{@color_hash[@arr_answers[index_inner][1]]}"
+      @tile2 = "#{@arr_answers[index_inner][2]}  #{@color_hash[@arr_answers[index_inner][2]]}"
+      @tile3 = "#{@arr_answers[index_inner][3]}  #{@color_hash[@arr_answers[index_inner][3]]}"
+
+      @check_tile0 = Tile.empty_hint
+      @check_tile1 = Tile.empty_hint
+      @check_tile2 = Tile.empty_hint
+      @check_tile3 = Tile.empty_hint
+
+      puts "#{"\n #{@tile0}  #{@tile1}  #{@tile2}  #{@tile3}"}  ||  #{@check_tile0}  #{@check_tile1}  #{@check_tile2}  #{@check_tile3}\n\n"
+    end
+  end
+
+  def color_check
+
+
+    @arr_ans_to_check.each_with_index do |element, check_index_outer|
+      element.each_with_index do |_ins_element, check_index_inner|
+        puts "#{@arr_ans_to_check[check_index_outer][check_index_inner]} #{@secret_code.include?(@arr_ans_to_check[check_index_outer][check_index_inner])}"
+      end
+      @secret_tally = @secret_code.tally
+      @user_tally = @arr_ans_to_check[check_index_outer].tally
+      @outcome_tally = {}
+    end
+
   end
 
   # Method for restart
