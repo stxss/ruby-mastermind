@@ -24,8 +24,6 @@ class Board
 
     @turn = 1
     @max = @turns * 4
-    @board_row = [Tile.empty_tile, Tile.empty_tile, Tile.empty_tile, Tile.empty_tile]
-    @board_tiles = Array.new(@turns + 1, @board_row)
     @arr_answers = Array.new(@turn - 1, [Tile.empty_tile, Tile.empty_tile, Tile.empty_tile, Tile.empty_tile])
 
     @arr_ans_to_check = Array.new(@turn - 1, [Tile.empty_tile, Tile.empty_tile, Tile.empty_tile, Tile.empty_tile])
@@ -120,33 +118,21 @@ class Board
   end
 
   def print_tiles
-    @arr_answers.each_with_index do |_inner, index_inner|
-      @tile0 = "#{@arr_answers[index_inner][0]}  #{@color_hash[@arr_answers[index_inner][0]]}"
-      @tile1 = "#{@arr_answers[index_inner][1]}  #{@color_hash[@arr_answers[index_inner][1]]}"
-      @tile2 = "#{@arr_answers[index_inner][2]}  #{@color_hash[@arr_answers[index_inner][2]]}"
-      @tile3 = "#{@arr_answers[index_inner][3]}  #{@color_hash[@arr_answers[index_inner][3]]}"
-
-      @check_tile0 = Tile.empty_hint
-      @check_tile1 = Tile.empty_hint
-      @check_tile2 = Tile.empty_hint
-      @check_tile3 = Tile.empty_hint
-
-      puts "#{"\n #{@tile0}  #{@tile1}  #{@tile2}  #{@tile3}"}  ||  #{@check_tile0}  #{@check_tile1}  #{@check_tile2}  #{@check_tile3}\n\n"
+    p @arr_answers
+    @arr_answers.each do |(first, second, third, fourth)|
+      puts "#{"\n #{first}  #{second}  #{third}  #{fourth}"}  ||  #{"#{Tile.empty_hint}  " * 4}\n\n"
     end
   end
 
   def color_check
-
-
-    @arr_ans_to_check.each_with_index do |element, check_index_outer|
-      element.each_with_index do |_ins_element, check_index_inner|
-        puts "#{@arr_ans_to_check[check_index_outer][check_index_inner]} #{@secret_code.include?(@arr_ans_to_check[check_index_outer][check_index_inner])}"
+    @arr_ans_to_check.each do |outer|
+      outer.each do |inner|
+        puts "refactored #{inner} #{@secret_code.include?(inner)}"
       end
       @secret_tally = @secret_code.tally
-      @user_tally = @arr_ans_to_check[check_index_outer].tally
+      @user_tally = outer.tally
       @outcome_tally = {}
     end
-
   end
 
   # Method for restart
