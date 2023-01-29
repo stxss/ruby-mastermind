@@ -25,7 +25,6 @@ class Board
     @turn = 1
     @max = @turns * 4
     @arr_answers = Array.new(@turn - 1, [Tile.empty_tile, Tile.empty_tile, Tile.empty_tile, Tile.empty_tile])
-
     @arr_ans_to_check = Array.new(@turn - 1, [Tile.empty_tile, Tile.empty_tile, Tile.empty_tile, Tile.empty_tile])
 
     until @is_winner || (@turn > @max)
@@ -36,8 +35,6 @@ class Board
       system('clear')
       print_tiles
       color_check
-      puts @secret_tally
-      puts @user_tally
       board
     end
   end
@@ -111,6 +108,7 @@ class Board
     @ans_to_check.delete_at(-1)
 
     print_tiles
+
     return unless (@turn > @turns) && !@is_winner
 
     puts 'You lost! Better luck next time!'
@@ -118,20 +116,54 @@ class Board
   end
 
   def print_tiles
-    p @arr_answers
     @arr_answers.each do |(first, second, third, fourth)|
       puts "#{"\n #{first}  #{second}  #{third}  #{fourth}"}  ||  #{"#{Tile.empty_hint}  " * 4}\n\n"
     end
+    puts "#{"\n #{Tile.empty_tile}  #{Tile.empty_tile}  #{Tile.empty_tile}  #{Tile.empty_tile}"}  ||  #{"#{Tile.empty_hint}  " * 4}\n\n" * (@turns - @arr_answers.length)
   end
 
   def color_check
     @arr_ans_to_check.each do |outer|
-      outer.each do |inner|
-        puts "refactored #{inner} #{@secret_code.include?(inner)}"
-      end
+      # Check for number of colors
       @secret_tally = @secret_code.tally
       @user_tally = outer.tally
-      @outcome_tally = {}
+      @outcome = {}
+      p @secret_tally
+      p @user_tally
+      p "secret normal #{@secret_code}"
+      p "user normal #{outer}"
+
+      feedback_hash = Hash.new { |h, k| h[k] = [] }
+      @correct_colors = 0
+      @correct_index = 0
+
+          # if k1 == k2
+          #   feedback_hash[k2] << [v1, v2].min
+          # end
+
+      # Check for the colors
+      # @secret_tally.each do |k1, v1|
+      #   @user_tally.each do |k2, v2|
+
+      #   end
+      # end
+
+      # Check for the indexes
+      4.times do |i|
+        if @secret_code[i] == outer[i]
+          feedback_hash[outer[i]] << 'green'
+        else
+          if @secret_code.any?(outer[i])
+            p feedback_hash[outer[i]].count('pink')
+            if feedback_hash[outer[i]].count('pink') < (4 - feedback_hash[outer[i]].count('green') - outer.count(outer[i]))
+              feedback_hash[outer[i]] << 'pink'
+            end
+          else
+            feedback_hash[outer[i]] << 'empty'
+          end
+        end
+      end
+      p feedback_hash
     end
   end
 
