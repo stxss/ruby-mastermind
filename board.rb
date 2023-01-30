@@ -3,6 +3,8 @@
 # rubocop: disable Metrics/AbcSize
 # rubocop: disable Metrics/MethodLength
 # rubocop: disable Layout/LineLength
+# rubocop: disable Metrics/CyclomaticComplexity
+# rubocop: disable Metrics/PerceivedComplexity
 
 require_relative './text_styles'
 require_relative './intro'
@@ -69,7 +71,9 @@ class Board
     elsif !duplicates && !blanks
       @codes = av.permutation(4).to_a
     end
-    @secret_code = @codes.sample
+    # @secret_code = @codes.sample
+    # @secret_code = [5, 0, 1, 0]
+    @secret_code = [5, 4, 3, 5]
   end
 
   def board
@@ -87,7 +91,7 @@ class Board
   end
 
   def color_set(idx)
-    @responses = ['0', '1', '2', '3', '4', '5', '6','blank'.downcase, 'r'.downcase, 'g'.downcase, 'b'.downcase, 'o'.downcase, 'v'.downcase,
+    @responses = ['0', '1', '2', '3', '4', '5', '6', 'blank'.downcase, 'r'.downcase, 'g'.downcase, 'b'.downcase, 'o'.downcase, 'v'.downcase,
                   't'.downcase, 'red'.downcase, 'green'.downcase, 'blue'.downcase, 'orange'.downcase, 'violet'.downcase, 'teal'.downcase]
 
     user_response = ''
@@ -127,43 +131,55 @@ class Board
       # Check for number of colors
       @secret_tally = @secret_code.tally
       @user_tally = outer.tally
-      @outcome = {}
-      p @secret_tally
-      p @user_tally
-      p "secret normal #{@secret_code}"
-      p "user normal #{outer}"
+      @outcome = Hash.new { |h, k| h[k] = [] }
 
-      feedback_hash = Hash.new { |h, k| h[k] = [] }
+      # feedback_hash = Hash.new { |h, k| h[k] = [] }
+
       @correct_colors = 0
       @correct_index = 0
 
-          # if k1 == k2
-          #   feedback_hash[k2] << [v1, v2].min
-          # end
-
-      # Check for the colors
-      # @secret_tally.each do |k1, v1|
-      #   @user_tally.each do |k2, v2|
-
-      #   end
-      # end
-
       # Check for the indexes
-      4.times do |i|
-        if @secret_code[i] == outer[i]
-          feedback_hash[outer[i]] << 'green'
-        else
-          if @secret_code.any?(outer[i])
-            p feedback_hash[outer[i]].count('pink')
-            if feedback_hash[outer[i]].count('pink') < (4 - feedback_hash[outer[i]].count('green') - outer.count(outer[i]))
-              feedback_hash[outer[i]] << 'pink'
-            end
-          else
-            feedback_hash[outer[i]] << 'empty'
+      p @secret_code.each_index.select { |i| @secret_code[i] == outer[i] }
+
+      # new_arr = outer.select{ |a| @secret_code.include? a }
+      new_arr = outer - (outer - @secret_code)
+
+      p @secret_tally
+      p @user_tally
+      @secret_tally.each do |k1, v1|
+        @user_tally.each do |k2, v2|
+          if k1 == k2
+            @outcome[k2] << [v1, v2].min
           end
         end
       end
-      p feedback_hash
+
+      p @outcome
+
+
+      @secret_code.each do |i|
+        p @secret_code.count(i)
+      end
+      p new_arr
+
+      # ary - (ary - other_ary)
+      @correct_index += (@secret_code.each_index.select { |i| @secret_code[i] == outer[i] }).length
+
+      # @correct_colors += (@secret_code & outer).length
+      @correct_colors += (new_arr).length
+
+      p @correct_index
+      p @correct_colors
+      4.times do |i|
+      #   if @secret_code.any?(outer[i])
+      #     # puts (outer.find_index(outer[i]))
+      #     if @secret_code.each_index.select { |i| @secret_code[i] == outer[i] } == outer.each_index.select { |i| outer[i] == @secret_code[i] }
+
+      #     end
+      #   end
+      #   # puts "for #{outer[i]} the count of pinks is #{feedback_hash.count('pink')} and the count of #{outer[i]} in secret is #{@secret_code.count(outer[i])}"
+      end
+      puts "correct colors is : #{@correct_colors} and correct indexes are : #{@correct_index}"
     end
   end
 
@@ -186,3 +202,5 @@ end
 # rubocop: enable Metrics/AbcSize
 # rubocop: enable Metrics/MethodLength
 # rubocop: enable Layout/LineLength
+# rubocop: enable Metrics/CyclomaticComplexity
+# rubocop: enable Metrics/PerceivedComplexity

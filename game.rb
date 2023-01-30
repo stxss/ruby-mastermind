@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 
+# rubocop: disable Metrics/AbcSize
+# rubocop: disable Metrics/CyclomaticComplexity
+# rubocop: disable Metrics/MethodLength
+# rubocop: disable Layout/LineLength
+
 require_relative './text_styles'
 require_relative './intro'
 require_relative './tiles'
@@ -74,3 +79,8 @@ class Game
     end
   end
 end
+
+# rubocop: enable Metrics/AbcSize
+# rubocop: enable Metrics/CyclomaticComplexity
+# rubocop: enable Metrics/MethodLength
+# rubocop: enable Layout/LineLength
