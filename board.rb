@@ -58,6 +58,12 @@ class Board
       "◯": "\u{25ef}"
     }
 
+    @hint_hash = {
+      'green' => Tile.place_color,
+      'pink' => Tile.color_only,
+      'empty' => Tile.empty_hint
+    }
+
     # Available numbers to create codes from
     av = [1, 2, 3, 4, 5, 6]
 
@@ -171,14 +177,14 @@ class Board
       p "intersection is #{@intersec}"
 
       @correct_index.to_i.times do
-        @hints_to_insert.push('green')
+        @hints_to_insert.push(@hint_hash['green'])
       end
 
       @intersec.length.times do
-          @hints_to_insert.push('pink')
+          @hints_to_insert.push(@hint_hash['pink'])
       end
 
-      @hints_to_insert.fill('empty', @hints_to_insert.length..4)
+      @hints_to_insert.fill(@hint_hash['empty'], @hints_to_insert.length..4)
 
       p "new outer is #{outer}"
       puts "greens should be #{@correct_index.to_i}"
@@ -199,10 +205,11 @@ class Board
   end
 
   def print_tiles
-    @arr_answers.each do |(first, second, third, fourth)|
-      # puts "#{"\n #{first}  #{second}  #{third}  #{fourth}"}  ||  #{"#{Tile.place_color}  " * @green}  #{"#{Tile.color_only}  " * @pink}  #{"#{Tile.empty_hint}  " * @empty}\n\n"
-      puts "#{"\n #{first}  #{second}  #{third}  #{fourth}"}  ||  #{"#{Tile.place_color}  " * 1}  #{"#{Tile.color_only}  " * 1}  #{"#{Tile.empty_hint}  " * 2}\n\n"
+    @arr_answers.zip(@hints_check).each do |(first, second, third, fourth), (fifth, sixth, seventh, eight)|
+      puts "#{"\n #{first}  #{second}  #{third}  #{fourth}"}  ||  #{fifth}  #{sixth}  #{seventh}  #{eight}\n\n"
     end
+
+
     puts "#{"\n #{Tile.empty_tile}  #{Tile.empty_tile}  #{Tile.empty_tile}  #{Tile.empty_tile}"}  ||  #{"#{Tile.empty_hint}  " * 4}\n\n" * (@turns - @arr_answers.length)
   end
 
