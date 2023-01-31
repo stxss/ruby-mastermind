@@ -26,13 +26,15 @@ class Board
 
     @turn = 1
     @max = @turns * 4
-    # @arr_answers = Array.new(@turn - 1, [Tile.empty_tile, Tile.empty_tile, Tile.empty_tile, Tile.empty_tile])
-    # @arr_ans_to_check = Array.new(@turn - 1, [Tile.empty_tile, Tile.empty_tile, Tile.empty_tile, Tile.empty_tile])
     @arr_answers = Array.new(@turn - 1)
     @arr_ans_to_check = Array.new(@turn - 1)
     @hints_check = Array.new(@turn - 1)
 
     until @is_winner || (@turn > @max)
+      # if (@turn == @turns) && @is_winner
+      #   puts "\nCongratulations! You guessed the code!!"
+      #   restart
+      # end
       if (@turn > @turns) && !@is_winner
         puts 'You lost! Better luck next time!'
         restart
@@ -80,8 +82,8 @@ class Board
     elsif !duplicates && !blanks
       @codes = av.permutation(4).to_a
     end
-    # @secret_code = @codes.sample
-    @secret_code = [1, 1, 3, 6]
+    @secret_code = @codes.sample
+    @secret_code = [2, 3, 3, 5]
   end
 
   def board
@@ -91,7 +93,7 @@ class Board
     @ans_to_check = [nil, nil, nil, nil]
     @arr_ans_to_check.insert(@turn - 1, @ans_to_check)
 
-    @hints_to_insert = []
+    @hints_to_insert = [Tile.empty_hint, Tile.empty_hint, Tile.empty_hint, Tile.empty_hint]
     @hints_check.insert(@turn - 1, @hints_to_insert)
 
     4.times do |i|
@@ -112,6 +114,23 @@ class Board
     loop do
       user_response = gets.chomp
       break if @responses.include?(user_response)
+    end
+
+    case user_response
+    when 'blank'.downcase
+      user_response = '0'
+    when 'r'.downcase, 'red'.downcase
+      user_response = '1'
+    when 'g'.downcase, 'green'.downcase
+      user_response = '2'
+    when 'b'.downcase, 'blue'.downcase
+      user_response = '3'
+    when 'o'.downcase, 'orange'.downcase
+      user_response = '4'
+    when 'v'.downcase, 'violet'.downcase
+      user_response = '5'
+    when 't'.downcase, 'teal'.downcase
+      user_response = '6'
     end
 
     @ans_to_check.insert(idx, user_response.to_i)
@@ -160,8 +179,6 @@ class Board
       @correct_colors += new_arr.length
       @empty_hint = 4 - @correct_index - @correct_colors
 
-      p "the colors in common are #{new_arr}"
-      p "the indexes of the correct colors that are in the correct place are #{@secret_code.each_index.select { |i| @secret_code[i] == outer[i] }}"
       # need the intersection between the indexes of correct colors and the indexes of colors in common
       @to_remove_from_outer = @secret_code.each_index.select { |i| @secret_code[i] == outer[i] }
 
@@ -169,46 +186,35 @@ class Board
         new_arr_idx << outer.find_index(i)
       end
 
-      p new_arr_idx
-      p new_arr_idx.uniq
-
       @intersec = new_arr_idx - @to_remove_from_outer
-
-      p "intersection is #{@intersec}"
 
       @correct_index.to_i.times do
         @hints_to_insert.push(@hint_hash['green'])
       end
 
-      @intersec.length.times do
-          @hints_to_insert.push(@hint_hash['pink'])
+      (@correct_colors - @correct_index.to_i).times do
+        @hints_to_insert.push(@hint_hash['pink'])
       end
 
       @hints_to_insert.fill(@hint_hash['empty'], @hints_to_insert.length..4)
 
-      p "new outer is #{outer}"
-      puts "greens should be #{@correct_index.to_i}"
-      puts "pinks should be #{new_arr_idx.length - @intersec.length}"
-      puts "empty should be #{4 - @correct_index.to_i - @intersec.length}"
-
       @hints_to_insert.pop if @hints_to_insert.length > 4
 
-      # @hints_to_insert[2] = 0 if @hints_to_insert[2].negative?
-
-      p @hints_to_insert
-      p @hints_check
-
-      puts "correct colors is : #{@correct_colors} and correct indexes are : #{@correct_index}"
+      if @hints_to_insert.all?(@hint_hash['green'])
+        @is_winner = true
+        puts "\nCongratulations! You guessed the code!!"
+        restart
+      end
 
       print_tiles
     end
   end
 
   def print_tiles
+    system('clear')
     @arr_answers.zip(@hints_check).each do |(first, second, third, fourth), (fifth, sixth, seventh, eight)|
       puts "#{"\n #{first}  #{second}  #{third}  #{fourth}"}  ||  #{fifth}  #{sixth}  #{seventh}  #{eight}\n\n"
     end
-
 
     puts "#{"\n #{Tile.empty_tile}  #{Tile.empty_tile}  #{Tile.empty_tile}  #{Tile.empty_tile}"}  ||  #{"#{Tile.empty_hint}  " * 4}\n\n" * (@turns - @arr_answers.length)
   end
