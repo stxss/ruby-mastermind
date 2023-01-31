@@ -26,8 +26,11 @@ class Board
 
     @turn = 1
     @max = @turns * 4
-    @arr_answers = Array.new(@turn - 1, [Tile.empty_tile, Tile.empty_tile, Tile.empty_tile, Tile.empty_tile])
-    @arr_ans_to_check = Array.new(@turn - 1, [Tile.empty_tile, Tile.empty_tile, Tile.empty_tile, Tile.empty_tile])
+    # @arr_answers = Array.new(@turn - 1, [Tile.empty_tile, Tile.empty_tile, Tile.empty_tile, Tile.empty_tile])
+    # @arr_ans_to_check = Array.new(@turn - 1, [Tile.empty_tile, Tile.empty_tile, Tile.empty_tile, Tile.empty_tile])
+    @arr_answers = Array.new(@turn - 1)
+    @arr_ans_to_check = Array.new(@turn - 1)
+    @hints_check = Array.new(@turn - 1)
 
     until @is_winner || (@turn > @max)
       if (@turn > @turns) && !@is_winner
@@ -72,16 +75,18 @@ class Board
       @codes = av.permutation(4).to_a
     end
     # @secret_code = @codes.sample
-    # @secret_code = [5, 0, 1, 0]
-    @secret_code = [5, 4, 3, 5]
+    @secret_code = [1, 1, 3, 6]
   end
 
   def board
     @answers = [Tile.empty_tile, Tile.empty_tile, Tile.empty_tile, Tile.empty_tile]
     @arr_answers.insert(@turn - 1, @answers)
 
-    @ans_to_check = [77, 77, 77, 77]
+    @ans_to_check = [nil, nil, nil, nil]
     @arr_ans_to_check.insert(@turn - 1, @ans_to_check)
+
+    @hints_to_insert = []
+    @hints_check.insert(@turn - 1, @hints_to_insert)
 
     4.times do |i|
       color_set(i)
@@ -110,7 +115,6 @@ class Board
 
     @answers.delete_at(-1)
     @ans_to_check.delete_at(-1)
-
     print_tiles
 
     return unless (@turn > @turns) && !@is_winner
@@ -119,68 +123,87 @@ class Board
     restart
   end
 
-  def print_tiles
-    @arr_answers.each do |(first, second, third, fourth)|
-      puts "#{"\n #{first}  #{second}  #{third}  #{fourth}"}  ||  #{"#{Tile.empty_hint}  " * 4}\n\n"
-    end
-    puts "#{"\n #{Tile.empty_tile}  #{Tile.empty_tile}  #{Tile.empty_tile}  #{Tile.empty_tile}"}  ||  #{"#{Tile.empty_hint}  " * 4}\n\n" * (@turns - @arr_answers.length)
-  end
-
   def color_check
     @arr_ans_to_check.each do |outer|
       # Check for number of colors
       @secret_tally = @secret_code.tally
       @user_tally = outer.tally
       @outcome = Hash.new { |h, k| h[k] = [] }
-
-      # feedback_hash = Hash.new { |h, k| h[k] = [] }
+      @hints_to_insert.clear
 
       @correct_colors = 0
       @correct_index = 0
 
-      # Check for the indexes
-      p @secret_code.each_index.select { |i| @secret_code[i] == outer[i] }
-
-      # new_arr = outer.select{ |a| @secret_code.include? a }
+      # Colors that are present
       new_arr = outer - (outer - @secret_code)
+      new_arr_idx = []
 
-      p @secret_tally
-      p @user_tally
       @secret_tally.each do |k1, v1|
         @user_tally.each do |k2, v2|
-          if k1 == k2
-            @outcome[k2] << [v1, v2].min
-          end
+          @outcome[k2] << [v1, v2].min if k1 == k2
         end
       end
 
-      p @outcome
-
-
-      @secret_code.each do |i|
-        p @secret_code.count(i)
+      new_arr.each do |i|
+        new_arr.delete_at(new_arr.find_index(i)) until new_arr.count(i) <= @outcome[i][0]
       end
-      p new_arr
 
-      # ary - (ary - other_ary)
+      # Indexes that coincide (same color and placing)
       @correct_index += (@secret_code.each_index.select { |i| @secret_code[i] == outer[i] }).length
 
-      # @correct_colors += (@secret_code & outer).length
-      @correct_colors += (new_arr).length
+      @correct_colors += new_arr.length
+      @empty_hint = 4 - @correct_index - @correct_colors
 
-      p @correct_index
-      p @correct_colors
-      4.times do |i|
-      #   if @secret_code.any?(outer[i])
-      #     # puts (outer.find_index(outer[i]))
-      #     if @secret_code.each_index.select { |i| @secret_code[i] == outer[i] } == outer.each_index.select { |i| outer[i] == @secret_code[i] }
+      p "the colors in common are #{new_arr}"
+      p "the indexes of the correct colors that are in the correct place are #{@secret_code.each_index.select { |i| @secret_code[i] == outer[i] }}"
+      # need the intersection between the indexes of correct colors and the indexes of colors in common
+      @to_remove_from_outer = @secret_code.each_index.select { |i| @secret_code[i] == outer[i] }
 
-      #     end
-      #   end
-      #   # puts "for #{outer[i]} the count of pinks is #{feedback_hash.count('pink')} and the count of #{outer[i]} in secret is #{@secret_code.count(outer[i])}"
+      new_arr.each do |i|
+        new_arr_idx << outer.find_index(i)
       end
+
+      p new_arr_idx
+      p new_arr_idx.uniq
+
+      @intersec = new_arr_idx - @to_remove_from_outer
+
+      p "intersection is #{@intersec}"
+
+      @correct_index.to_i.times do
+        @hints_to_insert.push('green')
+      end
+
+      @intersec.length.times do
+          @hints_to_insert.push('pink')
+      end
+
+      @hints_to_insert.fill('empty', @hints_to_insert.length..4)
+
+      p "new outer is #{outer}"
+      puts "greens should be #{@correct_index.to_i}"
+      puts "pinks should be #{new_arr_idx.length - @intersec.length}"
+      puts "empty should be #{4 - @correct_index.to_i - @intersec.length}"
+
+      @hints_to_insert.pop if @hints_to_insert.length > 4
+
+      # @hints_to_insert[2] = 0 if @hints_to_insert[2].negative?
+
+      p @hints_to_insert
+      p @hints_check
+
       puts "correct colors is : #{@correct_colors} and correct indexes are : #{@correct_index}"
+
+      print_tiles
     end
+  end
+
+  def print_tiles
+    @arr_answers.each do |(first, second, third, fourth)|
+      # puts "#{"\n #{first}  #{second}  #{third}  #{fourth}"}  ||  #{"#{Tile.place_color}  " * @green}  #{"#{Tile.color_only}  " * @pink}  #{"#{Tile.empty_hint}  " * @empty}\n\n"
+      puts "#{"\n #{first}  #{second}  #{third}  #{fourth}"}  ||  #{"#{Tile.place_color}  " * 1}  #{"#{Tile.color_only}  " * 1}  #{"#{Tile.empty_hint}  " * 2}\n\n"
+    end
+    puts "#{"\n #{Tile.empty_tile}  #{Tile.empty_tile}  #{Tile.empty_tile}  #{Tile.empty_tile}"}  ||  #{"#{Tile.empty_hint}  " * 4}\n\n" * (@turns - @arr_answers.length)
   end
 
   # Method for restart
