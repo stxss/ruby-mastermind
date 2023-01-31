@@ -35,6 +35,13 @@ class Board
       #   puts "\nCongratulations! You guessed the code!!"
       #   restart
       # end
+      if @turn == @turns - 1
+        if @hints_to_insert.all?(@hint_hash['green'])
+          @is_winner = true
+          puts "\nCongratulations! You guessed the code!!"
+          restart
+        end
+      end
       if (@turn > @turns) && !@is_winner
         puts 'You lost! Better luck next time!'
         restart
@@ -83,7 +90,6 @@ class Board
       @codes = av.permutation(4).to_a
     end
     @secret_code = @codes.sample
-    @secret_code = [2, 3, 3, 5]
   end
 
   def board
@@ -199,12 +205,6 @@ class Board
       @hints_to_insert.fill(@hint_hash['empty'], @hints_to_insert.length..4)
 
       @hints_to_insert.pop if @hints_to_insert.length > 4
-
-      if @hints_to_insert.all?(@hint_hash['green'])
-        @is_winner = true
-        puts "\nCongratulations! You guessed the code!!"
-        restart
-      end
 
       print_tiles
     end
