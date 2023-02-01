@@ -8,6 +8,7 @@
 require_relative './text_styles'
 require_relative './intro'
 require_relative './tiles'
+require_relative './computer'
 
 # Game class
 class Game
@@ -38,14 +39,18 @@ class Game
       break if blanks == true || blanks == false
     end
 
-    @game = Board.new(role, turns, duplicates, blanks)
+    if role == '1'
+      @game = Board.new(turns, duplicates, blanks)
+    elsif role == '2'
+      @game = Computer.new(turns, duplicates, blanks)
+    end
   end
 
   private
 
   # Asking what role does the player want to have
   def ask_role
-    puts "\nPress '1' to be the codemaker\nPress '2' to be the codebreaker"
+    puts "\nPress '1' to be the codebreaker\nPress '2' to be the codemaker"
     gets.chomp
   end
 
