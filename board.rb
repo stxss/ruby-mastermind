@@ -129,7 +129,6 @@ class Board
       color_set(i)
     end
 
-
     # Check the colors
     color_check
 
