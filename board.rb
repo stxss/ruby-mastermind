@@ -62,7 +62,9 @@ class Board
     return if @is_winner
 
     print_tiles
-    puts 'You lost! Better luck next time!'
+    # Printing out a loss message and the secret code colored tiles
+    puts "You lost! The correct code was #{@color_hash[@secret_code[0].to_s]} #{@color_hash[@secret_code[1].to_s]} #{@color_hash[@secret_code[2].to_s]} #{@color_hash[@secret_code[3].to_s]}"
+    puts 'Better luck next time!'
     restart
   end
 
@@ -126,6 +128,7 @@ class Board
     4.times do |i|
       color_set(i)
     end
+
 
     # Check the colors
     color_check
