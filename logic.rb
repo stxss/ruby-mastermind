@@ -43,7 +43,7 @@ module GameLogic
   end
 
   # Method for setting up the board
-  def board
+  def board(role)
     # Create an empty 4 space array to store empty tiles that act as placeholders and inserting it into the group array
     @answers = [Tile.empty_tile, Tile.empty_tile, Tile.empty_tile, Tile.empty_tile]
     @arr_answers.insert(@turn - 1, @answers)
@@ -57,8 +57,16 @@ module GameLogic
     @hints_check.insert(@turn - 1, @hints_to_insert)
 
     # As a code is a 4 digit number, set a color 4 times, each individually
-    4.times do |i|
-      color_set(i)
+    # In the case of the player choosing to be the codebreaker, proceed with the first condition of setting colors manually
+    if role == '1'
+      4.times do |i|
+        color_set(i)
+      end
+    elsif role == '2'
+      # In the case of the player choosing to be the codemaker, proceed with the condition where the computer follows an algorithm to try and break the code
+      4.times do |i|
+        color_set_computer(i)
+      end
     end
 
     # Check the colors
@@ -68,6 +76,7 @@ module GameLogic
     @turn += 1
   end
 
+  # Method for manual setting of colors
   def color_set(idx)
     # Possible responses
     @responses = ['0', '1', '2', '3', '4', '5', '6', 'blank'.downcase, 'r'.downcase, 'g'.downcase, 'b'.downcase, 'o'.downcase, 'v'.downcase,
@@ -116,6 +125,67 @@ module GameLogic
 
     # Print out the board
     print_tiles
+  end
+
+  # Method for computational setting of the colors
+  def color_set_computer(idx)
+    # Possible responses
+    @responses = ['0', '1', '2', '3', '4', '5', '6']
+
+    # Initiating the user response as an empty string
+    computer_response = ''
+
+    # Asking the user until they give a valid response
+    loop do
+      computer_response = computer_guess(@turn - 1, idx)
+      break if @responses.include?(computer_response)
+    end
+
+    # Insert the answer as a code to the checking array to compare it with the secret code
+    @ans_to_check.insert(idx, computer_response.to_i)
+
+    # Inserting the answer as a color tile to display it to the user
+    @answers.insert(idx, @@color_hash[computer_response])
+
+    # Clear the CLI
+    system('clear')
+
+    # Delete the last item from the arrays above, as the method inserts answers at the start and doesn't overwrite anything, so to prevent having 8-length arrays, for each response input, the last element is deleted. This way it is possible to have only arrays with 4 items
+    @answers.delete_at(-1)
+    @ans_to_check.delete_at(-1)
+
+    # Print out the board
+    # color_check
+    print_tiles
+  end
+
+  def computer_guess(order, idx)
+    guess = ''
+    @new_codes = @codes
+    if order == 0
+      case idx
+      when 0
+        guess = '0'
+      when 1
+        guess = '0'
+      when 2
+        guess = '1'
+      when 3
+        guess = '1'
+      end
+    elsif order > 0
+      case idx
+      when 0
+        guess = '1'
+      when 1
+        guess = '1'
+      when 2
+        guess = '1'
+      when 3
+        guess = '1'
+      end
+    sleep(1)
+    guess
   end
 
   # Method for color checking

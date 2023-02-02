@@ -16,12 +16,13 @@ require_relative './logic'
 class Board
   include GameLogic
 
-  attr_reader :turns, :duplicates, :blanks, :codes, :turn
+  attr_reader :role, :turns, :duplicates, :blanks, :codes, :turn
   attr_accessor :is_winner
 
 
   # When initializing a game, assigns the relevant variables
-  def initialize(turns, duplicates, blanks)
+  def initialize(role, turns, duplicates, blanks)
+    @role = role
     @turns = turns
     @duplicates = duplicates
     @blanks = blanks
@@ -51,7 +52,7 @@ class Board
       print_tiles
 
       # Set up a new board
-      board
+      board(role)
 
       # If the array with the group of answers contains any 4 digit array that is equal to the secret code, declare a winner to be found, clear the CLI and print the final tiles layout with all the attempts and hints
       next unless @arr_ans_to_check.any?(@secret_code)
