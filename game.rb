@@ -40,9 +40,9 @@ class Game
     end
 
     if role == '1'
-      @game = Board.new(turns, duplicates, blanks)
+      Board.new(turns, duplicates, blanks)
     elsif role == '2'
-      @game = Computer.new(turns, duplicates, blanks)
+      Computer.new(turns, duplicates, blanks)
     end
   end
 

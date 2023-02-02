@@ -14,9 +14,11 @@ require_relative './logic'
 
 # Board class
 class Board
+  include GameLogic
+
   attr_reader :turns, :duplicates, :blanks, :codes, :turn
   attr_accessor :is_winner
-  include GameLogic
+
 
   # When initializing a game, assigns the relevant variables
   def initialize(turns, duplicates, blanks)
