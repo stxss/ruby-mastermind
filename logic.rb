@@ -1,10 +1,8 @@
 
 module GameLogic
-    # Method to define the codes maps
-  def code_map
     # The user can enter either a number,a letter representing a color or the color name
     # Hash for colored tiles for available options of player choice
-    @color_hash = {
+    @@color_hash = {
       '0' => Tile.blank,
       '1' => Tile.red, 'r': Tile.red, 'red': Tile.red,
       '2' => Tile.green, 'g': Tile.green, 'green': Tile.green,
@@ -15,6 +13,8 @@ module GameLogic
       "◯": "\u{25ef}"
     }
 
+  # Method to define the codes maps
+  def code_map
     # Hint/Feedback hash, Green if the user has guesses the color and place correctly, Pink if the user has only guessed the color and empty if the user hasn't guessed the place nor the color
     @hint_hash = {
       'green' => Tile.place_color,
@@ -105,7 +105,7 @@ module GameLogic
     @ans_to_check.insert(idx, user_response.to_i)
 
     # Inserting the answer as a color tile to display it to the user
-    @answers.insert(idx, @color_hash[user_response])
+    @answers.insert(idx, @@color_hash[user_response])
 
     # Clear the CLI
     system('clear')

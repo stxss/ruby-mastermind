@@ -14,7 +14,6 @@ require_relative './board'
 
 class Computer
     include GameLogic
-
     attr_reader :turns, :duplicates, :blanks, :codes, :turn
     attr_accessor :is_winner
 
@@ -57,8 +56,7 @@ class Computer
             end
 
             color = ''
-
-            puts "Insert the #{ordinal} digit/color of your secret code"
+            puts "\nInsert the #{ordinal} digit/color of your secret code"
             loop do
               color = gets.chomp
               case @mode
@@ -71,7 +69,6 @@ class Computer
               when 4
                 break if @responses.include?(color) && ((!@player_code.any?(color)) && (color != '0' && color != 'blank'.downcase))
               end
-
             end
 
             case color
@@ -91,12 +88,14 @@ class Computer
               color = '6'
             end
 
-            puts color
             @player_code.insert(i, color)
-            puts "#{@player_code}"
-        end
+            print_code
+          end
     end
 
+    def print_code
+      puts "Your code is #{@@color_hash[@player_code[0].to_s]} #{@@color_hash[@player_code[1]]} #{@@color_hash[@player_code[2]]} #{@@color_hash[@player_code[3]]}"
+    end
 
 end
 
