@@ -83,18 +83,31 @@ module GameLogic
       end
     elsif role == '2'
       # In the case of the player choosing to be the codemaker, proceed with the condition where the computer follows an algorithm to try and break the code
+      @new_codes = @codes
+      if @turn == 1
+        @rand_guess = [0, 0, 1, 1]
+      elsif @turn > 1
+        @rand_guess = @new_codes.sample
+      end
+
       4.times do |i|
         color_set_computer(i)
       end
+      @new_codes.delete_at(@new_codes.find_index(@rand_guess))
     end
 
     # Check the colors
     color_check
 
+    if role == '2'
+      filter_codes
+    end
+
     # Advance to the next turn
     @turn += 1
   end
 
+# In case the answer is not a number but a letter or color, correspond it to the number
   def color_naming_swap(response)
     case response
     when 'blank'.downcase
@@ -113,7 +126,6 @@ module GameLogic
       response = '6'
     end
   end
-
 
   # Get the code when the user is the codemaker
   def get_code(i)
@@ -136,7 +148,6 @@ module GameLogic
       break if @responses.include?(color)
     end
 
-    # In case the answer is not a number but a letter or color, correspond it to the number
     color_naming_swap(color)
 
     @player_code.insert(i, color.to_i)
@@ -145,6 +156,22 @@ module GameLogic
 
   def print_code
     puts "Your code is : #{@@color_hash[@player_code[0].to_s]} #{@@color_hash[@player_code[1].to_s]} #{@@color_hash[@player_code[2].to_s]} #{@@color_hash[@player_code[3].to_s]}"
+  end
+
+  # Method to insert the answers into the respective arrays
+  def arr_insertion(idx, response)
+    # Insert the answer as a code to the checking array to compare it with the secret code
+    @ans_to_check.insert(idx, response)
+
+    # Inserting the answer as a color tile to display it to the user
+    @answers.insert(idx, @@color_hash[response.to_s])
+
+    # Clear the CLI
+    system('clear')
+
+    # Delete the last item from the arrays above, as the method inserts answers at the start and doesn't overwrite anything, so to prevent having 8-length arrays, for each response input, the last element is deleted. This way it is possible to have only arrays with 4 items
+    @answers.delete_at(-1)
+    @ans_to_check.delete_at(-1)
   end
 
   # Method for manual setting of colors
@@ -159,88 +186,80 @@ module GameLogic
       break if @responses.include?(user_response)
     end
 
-    # In case the answer is not a number but a letter or color, correspond it to the number
     color_naming_swap(user_response)
-
-    # Insert the answer as a code to the checking array to compare it with the secret code
-    @ans_to_check.insert(idx, user_response.to_i)
-
-    # Inserting the answer as a color tile to display it to the user
-    @answers.insert(idx, @@color_hash[user_response])
-
-    # Clear the CLI
-    system('clear')
-
-    # Delete the last item from the arrays above, as the method inserts answers at the start and doesn't overwrite anything, so to prevent having 8-length arrays, for each response input, the last element is deleted. This way it is possible to have only arrays with 4 items
-    @answers.delete_at(-1)
-    @ans_to_check.delete_at(-1)
+    arr_insertion(idx, user_response.to_i)
 
     # Print out the board
     print_tiles
   end
+
 
   # Method for computational setting of the colors
   def color_set_computer(idx)
     # Possible responses
     @responses = ['0', '1', '2', '3', '4', '5', '6']
 
-    # Initiating the user response as an empty string
+    # Initiating the computer response as an empty string
     computer_response = ''
 
-    # Asking the user until they give a valid response
+    # Asking the computer until they give a valid response
     loop do
       computer_response = computer_guess(@turn - 1, idx)
       break if @responses.include?(computer_response)
     end
 
-    # Insert the answer as a code to the checking array to compare it with the secret code
-    @ans_to_check.insert(idx, computer_response.to_i)
-
-    # Inserting the answer as a color tile to display it to the user
-    @answers.insert(idx, @@color_hash[computer_response])
-
-    # Clear the CLI
-    system('clear')
-
-    # Delete the last item from the arrays above, as the method inserts answers at the start and doesn't overwrite anything, so to prevent having 8-length arrays, for each response input, the last element is deleted. This way it is possible to have only arrays with 4 items
-    @answers.delete_at(-1)
-    @ans_to_check.delete_at(-1)
+    arr_insertion(idx, computer_response.to_i)
 
     # Print out the board
-    # color_check
     print_tiles
   end
 
   def computer_guess(order, idx)
     guess = ''
-    @new_codes = @codes
-    if order == 0
-      case idx
-      when 0
-        guess = '0'
-      when 1
-        guess = '0'
-      when 2
-        guess = '1'
-      when 3
-        guess = '1'
-      end
-    elsif order > 0
-      # puts "#{@new_codes}"
-      case idx
-      when 0
-        guess = '1'
-      when 1
-        guess = '1'
-      when 2
-        guess = '1'
-      when 3
-        guess = '1'
-      end
+    puts "#{@new_codes}"
+    puts "#{@rand_guess}"
+    puts "There are #{@new_codes.length} possible codes"
+
+    case idx
+    when 0
+      guess = @rand_guess[0].to_s
+    when 1
+      guess = @rand_guess[1].to_s
+    when 2
+      guess = @rand_guess[2].to_s
+    when 3
+      guess = @rand_guess[3].to_s
     end
-    puts @hints_to_insert
     sleep(1)
     guess
+  end
+
+  def filter_codes
+    # puts "green is #{@correct_index.to_i}"
+    # puts "pink is #{@correct_colors - @correct_index.to_i}"
+    if (@correct_colors + @correct_index).zero? && @turn < 3
+      @new_codes.delete_if { |code| !(@rand_guess & code).empty? }
+    else
+      update_codes(@correct_index, @correct_colors)
+
+    elsif @correct_index == 1
+      @new_codes.each_with_index do |nv, ni|
+        @rand_guess.each_with_index do |rv, ri|
+          if (nv != rv)
+            @new_codes[ni] = nil
+            @rand_guess.delete_at(ri)
+            break
+          end
+        end
+      end
+      @new_codes.compact!
+    end
+  end
+
+  def update_codes(green, pink)
+    total_cols = green + pink
+    @new_codes.delete_if { |code| (@rand_guess & code).length < @correct_colors }
+    
   end
 
   # Method for color checking
@@ -302,6 +321,8 @@ module GameLogic
       @hints_to_insert.pop if @hints_to_insert.length > 4
 
       print_tiles
+
+
     end
   end
 
