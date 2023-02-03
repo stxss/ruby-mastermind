@@ -39,7 +39,19 @@ module GameLogic
       @codes = av.permutation(4).to_a
     end
     # From the @codes variable, depending on the user preferences, take a random 4 digit code and make it the secret code
-    @secret_code = @codes.sample
+    @secret_code = []
+    @player_code = []
+    if role == '1'
+      @secret_code = @codes.sample
+    elsif role == '2'
+      4.times do |i|
+        get_code(i)
+        print_code
+      end
+      @secret_code = @player_code
+      puts "\nThe computer will begin breaking your code in a few moments!"
+      sleep(3)
+    end
   end
 
   # Method for setting up the board
@@ -74,6 +86,54 @@ module GameLogic
 
     # Advance to the next turn
     @turn += 1
+  end
+
+  def get_code(i)
+    @responses = ['0', '1', '2', '3', '4', '5', '6', 'blank'.downcase, 'r'.downcase, 'g'.downcase, 'b'.downcase, 'o'.downcase, 'v'.downcase,
+        't'.downcase, 'red'.downcase, 'green'.downcase, 'blue'.downcase, 'orange'.downcase, 'violet'.downcase, 'teal'.downcase]
+
+    ordinal = ''
+    case i
+    when 0
+        ordinal = 'first'
+    when 1
+        ordinal = 'second'
+    when 2
+        ordinal = 'third'
+    when 3
+        ordinal = 'fourth'
+    end
+
+    color = ''
+    puts "\nInsert the #{ordinal} digit/color of your secret code: "
+    loop do
+      color = gets.chomp
+      break if @responses.include?(color)
+    end
+
+    case color
+    when 'blank'.downcase
+      color = '0'
+    when 'r'.downcase, 'red'.downcase
+      color = '1'
+    when 'g'.downcase, 'green'.downcase
+      color = '2'
+    when 'b'.downcase, 'blue'.downcase
+      color = '3'
+    when 'o'.downcase, 'orange'.downcase
+      color = '4'
+    when 'v'.downcase, 'violet'.downcase
+      color = '5'
+    when 't'.downcase, 'teal'.downcase
+      color = '6'
+    end
+
+    @player_code.insert(i, color.to_i)
+    print "\n\e[A\e[A\e[K"
+  end
+
+  def print_code
+    puts "Your code is : #{@@color_hash[@player_code[0].to_s]} #{@@color_hash[@player_code[1].to_s]} #{@@color_hash[@player_code[2].to_s]} #{@@color_hash[@player_code[3].to_s]}"
   end
 
   # Method for manual setting of colors
@@ -174,6 +234,7 @@ module GameLogic
         guess = '1'
       end
     elsif order > 0
+      # puts "#{@new_codes}"
       case idx
       when 0
         guess = '1'
@@ -184,6 +245,8 @@ module GameLogic
       when 3
         guess = '1'
       end
+    end
+    puts @hints_to_insert
     sleep(1)
     guess
   end
