@@ -11,6 +11,7 @@ require_relative './intro'
 require_relative './tiles'
 require_relative './game'
 require_relative './logic'
+require_relative './computer'
 
 # Board class
 class Board

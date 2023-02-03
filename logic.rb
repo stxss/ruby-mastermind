@@ -38,12 +38,19 @@ module GameLogic
     elsif !duplicates && !blanks
       @codes = av.permutation(4).to_a
     end
-    # From the @codes variable, depending on the user preferences, take a random 4 digit code and make it the secret code
+
+    # Possible responses
+    @responses = ['0', '1', '2', '3', '4', '5', '6', 'blank'.downcase, 'r'.downcase, 'g'.downcase, 'b'.downcase, 'o'.downcase, 'v'.downcase,
+      't'.downcase, 'red'.downcase, 'green'.downcase, 'blue'.downcase, 'orange'.downcase, 'violet'.downcase, 'teal'.downcase]
+
     @secret_code = []
     @player_code = []
+    # If the user is a code breaker
+    # From the @codes variable, depending on the user preferences, take a random 4 digit code and make it the secret code
     if role == '1'
       @secret_code = @codes.sample
     elsif role == '2'
+      # If the user is the codemaker, get the code manually and set it as the secret code
       4.times do |i|
         get_code(i)
         print_code
@@ -88,10 +95,28 @@ module GameLogic
     @turn += 1
   end
 
-  def get_code(i)
-    @responses = ['0', '1', '2', '3', '4', '5', '6', 'blank'.downcase, 'r'.downcase, 'g'.downcase, 'b'.downcase, 'o'.downcase, 'v'.downcase,
-        't'.downcase, 'red'.downcase, 'green'.downcase, 'blue'.downcase, 'orange'.downcase, 'violet'.downcase, 'teal'.downcase]
+  def color_naming_swap(response)
+    case response
+    when 'blank'.downcase
+      response = '0'
+    when 'r'.downcase, 'red'.downcase
+      response = '1'
+    when 'g'.downcase, 'green'.downcase
+      response = '2'
+    when 'b'.downcase, 'blue'.downcase
+      response = '3'
+    when 'o'.downcase, 'orange'.downcase
+      response = '4'
+    when 'v'.downcase, 'violet'.downcase
+      response = '5'
+    when 't'.downcase, 'teal'.downcase
+      response = '6'
+    end
+  end
 
+
+  # Get the code when the user is the codemaker
+  def get_code(i)
     ordinal = ''
     case i
     when 0
@@ -111,22 +136,8 @@ module GameLogic
       break if @responses.include?(color)
     end
 
-    case color
-    when 'blank'.downcase
-      color = '0'
-    when 'r'.downcase, 'red'.downcase
-      color = '1'
-    when 'g'.downcase, 'green'.downcase
-      color = '2'
-    when 'b'.downcase, 'blue'.downcase
-      color = '3'
-    when 'o'.downcase, 'orange'.downcase
-      color = '4'
-    when 'v'.downcase, 'violet'.downcase
-      color = '5'
-    when 't'.downcase, 'teal'.downcase
-      color = '6'
-    end
+    # In case the answer is not a number but a letter or color, correspond it to the number
+    color_naming_swap(color)
 
     @player_code.insert(i, color.to_i)
     print "\n\e[A\e[A\e[K"
@@ -138,10 +149,6 @@ module GameLogic
 
   # Method for manual setting of colors
   def color_set(idx)
-    # Possible responses
-    @responses = ['0', '1', '2', '3', '4', '5', '6', 'blank'.downcase, 'r'.downcase, 'g'.downcase, 'b'.downcase, 'o'.downcase, 'v'.downcase,
-                  't'.downcase, 'red'.downcase, 'green'.downcase, 'blue'.downcase, 'orange'.downcase, 'violet'.downcase, 'teal'.downcase]
-
     # Initiating the user response as an empty string
     user_response = ''
 
@@ -153,22 +160,7 @@ module GameLogic
     end
 
     # In case the answer is not a number but a letter or color, correspond it to the number
-    case user_response
-    when 'blank'.downcase
-      user_response = '0'
-    when 'r'.downcase, 'red'.downcase
-      user_response = '1'
-    when 'g'.downcase, 'green'.downcase
-      user_response = '2'
-    when 'b'.downcase, 'blue'.downcase
-      user_response = '3'
-    when 'o'.downcase, 'orange'.downcase
-      user_response = '4'
-    when 'v'.downcase, 'violet'.downcase
-      user_response = '5'
-    when 't'.downcase, 'teal'.downcase
-      user_response = '6'
-    end
+    color_naming_swap(user_response)
 
     # Insert the answer as a code to the checking array to compare it with the secret code
     @ans_to_check.insert(idx, user_response.to_i)
