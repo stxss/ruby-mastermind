@@ -1,11 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop: disable Metrics/AbcSize
-# rubocop: disable Metrics/MethodLength
-# rubocop: disable Layout/LineLength
-# rubocop: disable Metrics/CyclomaticComplexity
-# rubocop: disable Metrics/PerceivedComplexity
-
 require_relative './text_styles'
 require_relative './intro'
 require_relative './tiles'
@@ -19,7 +13,6 @@ class Board
 
   attr_reader :role, :turns, :duplicates, :blanks, :codes, :turn
   attr_accessor :is_winner
-
 
   # When initializing a game, assigns the relevant variables
   def initialize(role, turns, duplicates, blanks)
@@ -68,14 +61,12 @@ class Board
 
     print_tiles
     # Printing out a loss message and the secret code colored tiles
-    puts "You lost! The correct code was #{@@color_hash[@secret_code[0].to_s]} #{@@color_hash[@secret_code[1].to_s]} #{@@color_hash[@secret_code[2].to_s]} #{@@color_hash[@secret_code[3].to_s]}"
+    if role == '1'
+      puts "You lost! The correct code was #{@@color_hash[@secret_code[0].to_s]} #{@@color_hash[@secret_code[1].to_s]} #{@@color_hash[@secret_code[2].to_s]} #{@@color_hash[@secret_code[3].to_s]}"
+    elsif role == '2'
+      puts "The computer couldn't guess your code! You beat it this time!"
+    end
     puts 'Better luck next time!'
     restart
   end
 end
-
-# rubocop: enable Metrics/AbcSize
-# rubocop: enable Metrics/MethodLength
-# rubocop: enable Layout/LineLength
-# rubocop: enable Metrics/CyclomaticComplexity
-# rubocop: enable Metrics/PerceivedComplexity
