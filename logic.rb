@@ -45,6 +45,9 @@ module GameLogic
     @responses = ['0', '1', '2', '3', '4', '5', '6', 'blank'.downcase, 'r'.downcase, 'g'.downcase, 'b'.downcase, 'o'.downcase, 'v'.downcase,
                   't'.downcase, 'red'.downcase, 'green'.downcase, 'blue'.downcase, 'orange'.downcase, 'violet'.downcase, 'teal'.downcase]
 
+    @responses_no_blanks = ['1', '2', '3', '4', '5', '6', 'r'.downcase, 'g'.downcase, 'b'.downcase, 'o'.downcase, 'v'.downcase,
+                            't'.downcase, 'red'.downcase, 'green'.downcase, 'blue'.downcase, 'orange'.downcase, 'violet'.downcase, 'teal'.downcase]
+
     @secret_code = []
     @player_code = []
 
@@ -197,10 +200,14 @@ module GameLogic
     else
       puts "\nThe available colors to insert are #{Tile.red} #{Tile.green} #{Tile.blue} #{Tile.orange} #{Tile.violet} #{Tile.teal}"
     end
-      puts 'Please, enter a color/number of your choice'
+    puts 'Please, enter a color/number of your choice'
     loop do
       user_response = gets.chomp.downcase
-      break if @responses.include?(user_response)
+      if blanks
+        break if @responses.include?(user_response)
+      elsif @responses_no_blanks.include?(user_response)
+        break
+      end
     end
 
     # Convert the user response to the respective colors (handling cases where the user can either input a number, a lowercase/uppercase letter/color name)
