@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Module that handles the logic of the game
 module GameLogic
   # The user can enter either a number,a letter representing a color or the color name
   # Hash for colored tiles for available options of player choice
@@ -47,9 +50,10 @@ module GameLogic
 
     # If the user is a code breaker
     # From the @codes variable, depending on the user preferences, take a random 4 digit code and make it the secret code
-    if role == '1'
+    case role
+    when '1'
       @secret_code = @codes.sample
-    elsif role == '2'
+    when '2'
       # If the user is the codemaker, get the code manually and set it as the secret code
       4.times do |i|
         get_code(i)
@@ -77,24 +81,25 @@ module GameLogic
 
     # As a code is a 4 digit number, set a color 4 times, each individually
     # In the case of the player choosing to be the codebreaker, proceed with the first condition of setting colors manually
-    if role == '1'
+    case role
+    when '1'
       4.times do |i|
         color_set(i)
       end
-    elsif role == '2'
+    when '2'
       # In the case of the player choosing to be the codemaker, proceed with the condition where the computer follows an algorithm to try and break the code
       @new_codes = @codes
       if @turn == 1
         @rand_guess = [0, 0, 1, 1]
       elsif @turn > 1
         # Choose if the next guess is the first element of the rest of the codes or a random guess
-        options = [:sample, :first_element]
+        options = %i[sample first_element]
         selected = options.sample
-        if selected == :sample
-          @rand_guess = @new_codes.sample
-        else
-          @rand_guess = @new_codes[0]
-        end
+        @rand_guess = if selected == :sample
+                        @new_codes.sample
+                      else
+                        @new_codes[0]
+                      end
       end
 
       # Same as with the user, set 4 colors
@@ -119,19 +124,19 @@ module GameLogic
   def color_naming_swap(response)
     case response
     when 'blank'.downcase, '0'
-      response = '0'
+      '0'
     when 'r'.downcase, 'red'.downcase, '1'
-      response = '1'
+      '1'
     when 'g'.downcase, 'green'.downcase, '2'
-      response = '2'
+      '2'
     when 'b'.downcase, 'blue'.downcase, '3'
-      response = '3'
+      '3'
     when 'o'.downcase, 'orange'.downcase, '4'
-      response = '4'
+      '4'
     when 'v'.downcase, 'violet'.downcase, '5'
-      response = '5'
+      '5'
     when 't'.downcase, 'teal'.downcase, '6'
-      response = '6'
+      '6'
     end
   end
 
@@ -250,10 +255,16 @@ module GameLogic
       @new_codes.delete_if { |code| !(@rand_guess & code).empty? }
     elsif !green.zero? && pink.zero?
       # If there are green hints and no pink hints, delete all of the codes where the amount of green hints would be less than the green pegs from this last guess
-      @new_codes.delete_if { |code| (@secret_code.each_index.select { |i| @secret_code[i] == code[i] }).length < green}
+      @new_codes.delete_if { |code| (@secret_code.each_index.select { |i| @secret_code[i] == code[i] }).length < green }
     elsif !green.zero? && !pink.zero?
       # If there are green and pink hints, delete all of the codes where the amount of the green and pink hints would be less than the sum of pink and green hints of this last guess and where, at the same time, the amount of green hints would be less than the amount of pink hints (´|i| @secret_code[i] == code[i]´ this part checks if the index is the same)
-      @new_codes.delete_if { |code| (@secret_code.each_index.select { |i| @secret_code[i] == code[i] }).length != total_cols && (@secret_code.each_index.select { |i| @secret_code[i] == code[i] }).length < pink}
+      @new_codes.delete_if do |code|
+        (@secret_code.each_index.select do |i|
+           @secret_code[i] == code[i]
+         end).length != total_cols && (@secret_code.each_index.select do |i|
+                                         @secret_code[i] == code[i]
+                                       end).length < pink
+      end
     end
   end
 
@@ -335,9 +346,10 @@ module GameLogic
     # If the user is the winner, print out a congratulatory message and prompt for a restart/another round
     return unless @is_winner
 
-    if role == '1'
+    case role
+    when '1'
       puts 'Congratulations! You cracked the code!'
-    elsif role == '2'
+    when '2'
       puts "The computer guessed your code in #{@turn - 1} tries! You lost this time!"
     end
     restart

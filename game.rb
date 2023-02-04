@@ -24,7 +24,8 @@ class Game
       break if turns.between?(1, 12)
     end
 
-    if role == '1'
+    case role
+    when '1'
       loop do
         @duplicates = duplicates?
         break if duplicates == true || duplicates == false
@@ -36,7 +37,7 @@ class Game
       end
 
       Board.new(role, turns, duplicates, blanks)
-    elsif role == '2'
+    when '2'
       Computer.new(role, turns, duplicates, blanks)
     end
   end
@@ -51,9 +52,10 @@ class Game
 
   # Asking how many turns does the player want the game to be
   def ask_turns
-    if role == '1'
+    case role
+    when '1'
       puts "\nEnter the amount of turns that you want to play in the range 1-12: "
-    elsif role == '2'
+    when '2'
       puts "\nEnter the amount of turns that you want to give the computer to guess in the range 1-12: "
     end
     gets.chomp.to_i
@@ -83,4 +85,3 @@ class Game
     end
   end
 end
-

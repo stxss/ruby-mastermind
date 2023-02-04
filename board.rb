@@ -61,9 +61,10 @@ class Board
 
     print_tiles
     # Printing out a loss message and the secret code colored tiles
-    if role == '1'
+    case role
+    when '1'
       puts "You lost! The correct code was #{@@color_hash[@secret_code[0].to_s]} #{@@color_hash[@secret_code[1].to_s]} #{@@color_hash[@secret_code[2].to_s]} #{@@color_hash[@secret_code[3].to_s]}"
-    elsif role == '2'
+    when '2'
       puts "The computer couldn't guess your code! You beat it this time!"
     end
     puts 'Better luck next time!'

@@ -7,4 +7,3 @@ require './game'
 require './board'
 
 Game.new
-
