@@ -192,8 +192,12 @@ module GameLogic
     user_response = ''
 
     # Asking the user until they give a valid response
-    puts "\nThe available colors to insert are #{Tile.blank} #{Tile.red} #{Tile.green} #{Tile.blue} #{Tile.orange} #{Tile.violet} #{Tile.teal}"
-    puts 'Please, enter a color/number of your choice'
+    if blanks
+      puts "\nThe available colors to insert are #{Tile.blank} #{Tile.red} #{Tile.green} #{Tile.blue} #{Tile.orange} #{Tile.violet} #{Tile.teal}"
+    else
+      puts "\nThe available colors to insert are #{Tile.red} #{Tile.green} #{Tile.blue} #{Tile.orange} #{Tile.violet} #{Tile.teal}"
+    end
+      puts 'Please, enter a color/number of your choice'
     loop do
       user_response = gets.chomp.downcase
       break if @responses.include?(user_response)
