@@ -5,23 +5,23 @@ module GameLogic
   # The user can enter either a number,a letter representing a color or the color name
   # Hash for colored tiles for available options of player choice
   @@color_hash = {
-    '0' => Tile.blank,
-    '1' => Tile.red, 'r': Tile.red, 'red': Tile.red,
-    '2' => Tile.green, 'g': Tile.green, 'green': Tile.green,
-    '3' => Tile.blue, 'b': Tile.blue, 'blue': Tile.blue,
-    '4' => Tile.orange, 'o': Tile.orange, 'orange': Tile.orange,
-    '5' => Tile.violet, 'v': Tile.violet, 'violet': Tile.violet,
-    '6' => Tile.teal, 't': Tile.teal, 'teal': Tile.teal,
-    "◯": "\u{25ef}"
+    "0" => Tile.blank,
+    "1" => Tile.red, :r => Tile.red, :red => Tile.red,
+    "2" => Tile.green, :g => Tile.green, :green => Tile.green,
+    "3" => Tile.blue, :b => Tile.blue, :blue => Tile.blue,
+    "4" => Tile.orange, :o => Tile.orange, :orange => Tile.orange,
+    "5" => Tile.violet, :v => Tile.violet, :violet => Tile.violet,
+    "6" => Tile.teal, :t => Tile.teal, :teal => Tile.teal,
+    :"◯" => "\u{25ef}"
   }
 
   # Method to define the codes maps
   def code_map
     # Hint/Feedback hash, Green if the user has guesses the color and place correctly, Pink if the user has only guessed the color and empty if the user hasn't guessed the place nor the color
     @hint_hash = {
-      'green' => Tile.place_color,
-      'pink' => Tile.color_only,
-      'empty' => Tile.empty_hint
+      "green" => Tile.place_color,
+      "pink"  => Tile.color_only,
+      "empty" => Tile.empty_hint
     }
 
     # Available numbers to create codes from if blanks are not present
@@ -42,11 +42,11 @@ module GameLogic
     end
 
     # Possible responses
-    @responses = ['0', '1', '2', '3', '4', '5', '6', 'blank'.downcase, 'r'.downcase, 'g'.downcase, 'b'.downcase, 'o'.downcase, 'v'.downcase,
-                  't'.downcase, 'red'.downcase, 'green'.downcase, 'blue'.downcase, 'orange'.downcase, 'violet'.downcase, 'teal'.downcase]
+    @responses = ["0", "1", "2", "3", "4", "5", "6", "blank".downcase, "r".downcase, "g".downcase, "b".downcase, "o".downcase, "v".downcase,
+      "t".downcase, "red".downcase, "green".downcase, "blue".downcase, "orange".downcase, "violet".downcase, "teal".downcase]
 
-    @responses_no_blanks = ['1', '2', '3', '4', '5', '6', 'r'.downcase, 'g'.downcase, 'b'.downcase, 'o'.downcase, 'v'.downcase,
-                            't'.downcase, 'red'.downcase, 'green'.downcase, 'blue'.downcase, 'orange'.downcase, 'violet'.downcase, 'teal'.downcase]
+    @responses_no_blanks = ["1", "2", "3", "4", "5", "6", "r".downcase, "g".downcase, "b".downcase, "o".downcase, "v".downcase,
+      "t".downcase, "red".downcase, "green".downcase, "blue".downcase, "orange".downcase, "violet".downcase, "teal".downcase]
 
     @secret_code = []
     @player_code = []
@@ -54,9 +54,9 @@ module GameLogic
     # If the user is a code breaker
     # From the @codes variable, depending on the user preferences, take a random 4 digit code and make it the secret code
     case role
-    when '1'
+    when "1"
       @secret_code = @codes.sample
-    when '2'
+    when "2"
       # If the user is the codemaker, get the code manually and set it as the secret code
       4.times do |i|
         get_code(i)
@@ -85,11 +85,11 @@ module GameLogic
     # As a code is a 4 digit number, set a color 4 times, each individually
     # In the case of the player choosing to be the codebreaker, proceed with the first condition of setting colors manually
     case role
-    when '1'
+    when "1"
       4.times do |i|
         color_set(i)
       end
-    when '2'
+    when "2"
       # In the case of the player choosing to be the codemaker, proceed with the condition where the computer follows an algorithm to try and break the code
       @new_codes = @codes
       if @turn == 1
@@ -99,10 +99,10 @@ module GameLogic
         options = %i[sample first_element]
         selected = options.sample
         @rand_guess = if selected == :sample
-                        @new_codes.sample
-                      else
-                        @new_codes[0]
-                      end
+          @new_codes.sample
+        else
+          @new_codes[0]
+        end
       end
 
       # Same as with the user, set 4 colors
@@ -117,7 +117,7 @@ module GameLogic
     # Check the colors
     color_check
 
-    filter_codes(@correct_index, @correct_colors) if role == '2'
+    filter_codes(@correct_index, @correct_colors) if role == "2"
 
     # Advance to the next turn
     @turn += 1
@@ -126,38 +126,38 @@ module GameLogic
   # In case the answer is not a number but a letter or color, correspond it to the number
   def color_naming_swap(response)
     case response
-    when 'blank'.downcase, '0'
-      '0'
-    when 'r'.downcase, 'red'.downcase, '1'
-      '1'
-    when 'g'.downcase, 'green'.downcase, '2'
-      '2'
-    when 'b'.downcase, 'blue'.downcase, '3'
-      '3'
-    when 'o'.downcase, 'orange'.downcase, '4'
-      '4'
-    when 'v'.downcase, 'violet'.downcase, '5'
-      '5'
-    when 't'.downcase, 'teal'.downcase, '6'
-      '6'
+    when "blank".downcase, "0"
+      "0"
+    when "r".downcase, "red".downcase, "1"
+      "1"
+    when "g".downcase, "green".downcase, "2"
+      "2"
+    when "b".downcase, "blue".downcase, "3"
+      "3"
+    when "o".downcase, "orange".downcase, "4"
+      "4"
+    when "v".downcase, "violet".downcase, "5"
+      "5"
+    when "t".downcase, "teal".downcase, "6"
+      "6"
     end
   end
 
   # Get the code when the user is the codemaker
   def get_code(i)
-    ordinal = ''
+    ordinal = ""
     case i
     when 0
-      ordinal = 'first'
+      ordinal = "first"
     when 1
-      ordinal = 'second'
+      ordinal = "second"
     when 2
-      ordinal = 'third'
+      ordinal = "third"
     when 3
-      ordinal = 'fourth'
+      ordinal = "fourth"
     end
 
-    color = ''
+    color = ""
     puts "\nThe available colors to insert are #{Tile.blank} #{Tile.red} #{Tile.green} #{Tile.blue} #{Tile.orange} #{Tile.violet} #{Tile.teal}"
     puts "Insert the #{ordinal} digit/color of your secret code: "
     loop do
@@ -182,7 +182,7 @@ module GameLogic
     @answers.insert(idx, @@color_hash[response.to_s])
 
     # Clear the CLI
-    system('clear')
+    system("clear")
 
     # Delete the last item from the arrays above, as the method inserts answers at the start and doesn't overwrite anything, so to prevent having 8-length arrays, for each response input, the last element is deleted. This way it is possible to have only arrays with 4 items
     @answers.delete_at(-1)
@@ -192,7 +192,7 @@ module GameLogic
   # Method for manual setting of colors
   def color_set(idx)
     # Initiating the user response as an empty string
-    user_response = ''
+    user_response = ""
 
     # Asking the user until they give a valid response
     if blanks
@@ -200,7 +200,7 @@ module GameLogic
     else
       puts "\nThe available colors to insert are #{Tile.red} #{Tile.green} #{Tile.blue} #{Tile.orange} #{Tile.violet} #{Tile.teal}"
     end
-    puts 'Please, enter a color/number of your choice'
+    puts "Please, enter a color/number of your choice"
     loop do
       user_response = gets.chomp.downcase
       if blanks
@@ -223,7 +223,7 @@ module GameLogic
     @responses = %w[0 1 2 3 4 5 6]
 
     # Initiating the computer response as an empty string
-    computer_response = ''
+    computer_response = ""
 
     # Asking the computer until they give a valid response
     loop do
@@ -239,7 +239,7 @@ module GameLogic
   end
 
   def computer_guess(_order, idx)
-    guess = ''
+    guess = ""
     puts "The computer is working and it says that there are #{@new_codes.length} possible codes left! :)"
 
     # For each index output the individual number
@@ -323,16 +323,16 @@ module GameLogic
 
       # Add a green hint/feedback for each correct index guess
       @correct_index.to_i.times do
-        @hints_to_insert.push(@hint_hash['green'])
+        @hints_to_insert.push(@hint_hash["green"])
       end
 
       # Add a pink hint/feedback for each correct color guess that is not on the correct index
       (@correct_colors - @correct_index.to_i).times do
-        @hints_to_insert.push(@hint_hash['pink'])
+        @hints_to_insert.push(@hint_hash["pink"])
       end
 
       # Fill the rest of the feedback with empty hints, up to 4 (max amount of hints)
-      @hints_to_insert.fill(@hint_hash['empty'], @hints_to_insert.length..4)
+      @hints_to_insert.fill(@hint_hash["empty"], @hints_to_insert.length..4)
 
       # If in any case the hints to insert is an array that's bigger than 4, pop the last element, so the max allowed is 4
       @hints_to_insert.pop if @hints_to_insert.length > 4
@@ -344,7 +344,7 @@ module GameLogic
   # Method to print tiles
   def print_tiles
     # Clear the CLI
-    system('clear')
+    system("clear")
 
     # Zip the array of all answers and hints feedbacks and "link them", so for each code, there is a separate set of hints
     @arr_answers.zip(@hints_check).each do |(first, second, third, fourth), (fifth, sixth, seventh, eight)|
@@ -358,9 +358,9 @@ module GameLogic
     return unless @is_winner
 
     case role
-    when '1'
-      puts 'Congratulations! You cracked the code!'
-    when '2'
+    when "1"
+      puts "Congratulations! You cracked the code!"
+    when "2"
       puts "The computer guessed your code in #{@turn - 1} tries! You lost this time!"
     end
     restart
@@ -372,10 +372,10 @@ module GameLogic
       puts "\nDo you want to play again? Please enter a valid option. [Y/N]"
       answer = gets.chomp
       case answer
-      when 'Y', 'y', 'yes'.downcase
+      when "Y", "y", "yes".downcase
         Game.new
-      when 'N', 'n', 'no'.downcase
-        puts 'Thank you for playing Mastermind!'
+      when "N", "n", "no".downcase
+        puts "Thank you for playing Mastermind!"
         exit
       end
     end

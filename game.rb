@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require_relative './text_styles'
-require_relative './intro'
-require_relative './tiles'
-require_relative './computer'
+require_relative "./text_styles"
+require_relative "./intro"
+require_relative "./tiles"
+require_relative "./computer"
 
 # Game class
 class Game
@@ -16,7 +16,7 @@ class Game
 
     loop do
       @role = ask_role
-      break if role == '1' || role == '2'
+      break if role == "1" || role == "2"
     end
 
     loop do
@@ -25,7 +25,7 @@ class Game
     end
 
     case role
-    when '1'
+    when "1"
       loop do
         @duplicates = duplicates?
         break if duplicates == true || duplicates == false
@@ -37,7 +37,7 @@ class Game
       end
 
       Board.new(role, turns, duplicates, blanks)
-    when '2'
+    when "2"
       Computer.new(role, turns, duplicates, blanks)
     end
   end
@@ -53,9 +53,9 @@ class Game
   # Asking how many turns does the player want the game to be
   def ask_turns
     case role
-    when '1'
+    when "1"
       puts "\nEnter the amount of turns that you want to play in the range 1-12: "
-    when '2'
+    when "2"
       puts "\nEnter the amount of turns that you want to give the computer to guess in the range 1-12: "
     end
     gets.chomp.to_i
@@ -66,9 +66,9 @@ class Game
     puts "\nDo you want to allow for duplicates, (e.g 1122)? [Y/n]"
     answer = gets.chomp
     case answer
-    when 'Y'.downcase, 'YES'.downcase
+    when "Y".downcase, "YES".downcase
       true
-    when 'N'.downcase, 'NO'.downcase
+    when "N".downcase, "NO".downcase
       false
     end
   end
@@ -78,9 +78,9 @@ class Game
     puts "\nDo you want to allow for blanks, (e.g 0035)? [Y/n]"
     answer = gets.chomp
     case answer
-    when 'Y'.downcase, 'YES'.downcase
+    when "Y".downcase, "YES".downcase
       true
-    when 'N'.downcase, 'NO'.downcase
+    when "N".downcase, "NO".downcase
       false
     end
   end

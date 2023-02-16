@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require_relative './text_styles'
-require_relative './intro'
-require_relative './tiles'
-require_relative './game'
-require_relative './logic'
-require_relative './computer'
+require_relative "./text_styles"
+require_relative "./intro"
+require_relative "./tiles"
+require_relative "./game"
+require_relative "./logic"
+require_relative "./computer"
 
 # Board class
 class Board
@@ -40,7 +40,7 @@ class Board
     # Until the current turn is bigger than the max amount of allowed turns, execute the code (the +1 is because the @turn variable started at 1)
     until @turn >= @turns + 1
       # Clear the CLI
-      system('clear')
+      system("clear")
 
       # Print the tiles
       print_tiles
@@ -52,7 +52,7 @@ class Board
       next unless @arr_ans_to_check.any?(@secret_code)
 
       @is_winner = true
-      system('clear')
+      system("clear")
       print_tiles
     end
 
@@ -62,12 +62,12 @@ class Board
     print_tiles
     # Printing out a loss message and the secret code colored tiles
     case role
-    when '1'
+    when "1"
       puts "You lost! The correct code was #{@@color_hash[@secret_code[0].to_s]} #{@@color_hash[@secret_code[1].to_s]} #{@@color_hash[@secret_code[2].to_s]} #{@@color_hash[@secret_code[3].to_s]}"
-    when '2'
+    when "2"
       puts "The computer couldn't guess your code! You beat it this time!"
     end
-    puts 'Better luck next time!'
+    puts "Better luck next time!"
     restart
   end
 end

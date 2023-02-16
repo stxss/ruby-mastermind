@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative './text_styles'
-require_relative './intro'
-require_relative './tiles'
-require_relative './game'
-require_relative './board'
+require_relative "./text_styles"
+require_relative "./intro"
+require_relative "./tiles"
+require_relative "./game"
+require_relative "./board"
 
 # Class for the computer solver class
 class Computer < Board

@@ -4,24 +4,24 @@
 module TextStyles
   # Foreground colors
   RGB_COLOR_MAP = {
-    black: '0;0;0',
-    white: '211;215;207',
-    cyan: '139;233;253',
-    teal: '20;72;69',
-    green: '47;70;27',
-    light_green: '158;206;106',
-    dark_green: '38;156;90',
-    pink: '247;118;142',
-    red: '129;19;9',
-    dark_red: '190;28;40',
-    light_blue: '122;162;247',
-    blue: '9;57;159',
-    yellow: '224;175;104',
-    violet: '94;84;142',
-    thistle: '199;182;221',
-    mauve: '231;198;255',
-    orange: '171;71;0',
-    gray: '65;65;58'
+    black:       "0;0;0",
+    white:       "211;215;207",
+    cyan:        "139;233;253",
+    teal:        "20;72;69",
+    green:       "47;70;27",
+    light_green: "158;206;106",
+    dark_green:  "38;156;90",
+    pink:        "247;118;142",
+    red:         "129;19;9",
+    dark_red:    "190;28;40",
+    light_blue:  "122;162;247",
+    blue:        "9;57;159",
+    yellow:      "224;175;104",
+    violet:      "94;84;142",
+    thistle:     "199;182;221",
+    mauve:       "231;198;255",
+    orange:      "171;71;0",
+    gray:        "65;65;58"
   }.freeze
 
   refine String do
