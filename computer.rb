@@ -6,7 +6,6 @@ require_relative "./tiles"
 require_relative "./game"
 require_relative "./board"
 
-# Class for the computer solver class
 class Computer < Board
   include GameLogic
   attr_reader :role, :turns, :duplicates, :blanks, :codes, :turn

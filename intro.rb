@@ -5,7 +5,6 @@
 require_relative "./text_styles"
 require_relative "./tiles"
 
-# Class to print the introduction to the game
 class Intro
   using TextStyles
 

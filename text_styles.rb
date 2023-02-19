@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-# Applying color and other modifications (like boldness, italic, etc.) and background color to the terminal text
 module TextStyles
-  # Foreground colors
   RGB_COLOR_MAP = {
     black:       "0;0;0",
     white:       "211;215;207",
@@ -25,19 +23,16 @@ module TextStyles
   }.freeze
 
   refine String do
-    # Font/Foreground colors
     def fg_color(color_name)
       rgb_val = RGB_COLOR_MAP[color_name]
       "\e[38;2;#{rgb_val}m#{self}\e[0m"
     end
 
-    # Background colors
     def bg_color(color_name)
       rgb_val = RGB_COLOR_MAP[color_name]
       "\e[48;2;#{rgb_val}m#{self}\e[0m"
     end
 
-    # Other text style modifiers
     def bold
       "\033[1m#{self}\033[0m"
     end
